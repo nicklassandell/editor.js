@@ -1,0 +1,72 @@
+.editor {
+    position: relative;
+
+    .toolbar {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        background: #FFF;
+        padding: 4px;
+        border-radius: 4px;
+        display: flex;
+        gap: 2px;
+
+        span {
+            display: block;
+            width: 1px;
+            background: black;
+            margin: 6px 10px;
+            opacity: .2;
+        }
+
+        button {
+            font-size: 15px;
+            border: none;
+            background: transparent;
+            padding: 8px;
+            color: black;
+
+            &:hover {
+                background: papayawhip;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .content {
+        p, div, h1, h2, h3, h4 {
+            position: relative;
+            display: block;
+            margin: 0 0 1em;
+
+            &::before {
+                position: absolute;
+                display: block;
+                bottom: 100%;
+                right: 100%;
+                color: darkorange;
+                font-size: 8px;
+            }
+        }
+
+        //p::before {
+        //    content: 'P';
+        //}
+        //
+        //div::before {
+        //    content: 'DIV';
+        //}
+
+        h1::before {
+            content: 'H1';
+        }
+
+        h2::before {
+            content: 'H2';
+        }
+
+        h3::before {
+            content: 'H3';
+        }
+    }
+}
