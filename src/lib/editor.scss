@@ -11,7 +11,7 @@
         display: flex;
         gap: 2px;
 
-        span {
+        .divider {
             display: block;
             width: 1px;
             background: black;
@@ -25,10 +25,44 @@
             background: transparent;
             padding: 8px;
             color: black;
+            white-space: nowrap;
+            width: 100%;
+            text-align: left;
+            border-radius: 4px;
+            cursor: pointer;
 
-            &:hover {
-                background: papayawhip;
-                cursor: pointer;
+            &.--active {
+                background: hotpink;
+                color: white;
+            }
+
+            &:not(.--active):hover {
+                background: #ffedca;
+            }
+        }
+
+        .toolbar-btn-holder {
+            position: relative;
+            z-index: 10;
+
+            &:hover > .children {
+                display: flex;
+            }
+
+            .children {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                display: none;
+                flex-direction: column;
+                gap: 2px;
+                background: #FFF;
+                padding: 4px;
+                border-radius: 4px;
+
+                button {
+                    padding: 8px 32px 8px 8px;
+                }
             }
         }
     }
