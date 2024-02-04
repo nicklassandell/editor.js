@@ -7,11 +7,16 @@ export const simpleToolbarItemFn = (item, editor) => {
         attrs.push(`data-apply-with="${item.applyWith || ''}"`);
     }
 
+    const show = typeof item.showCheckFn === 'function' ? item.showCheckFn() : true;
+
+    if (!show) return ''; // todo: not nice
+
+    const children = typeof item.children === 'function' ? item.children() : item.children;
 
     let childrenHtml = '';
-    if (item.children?.length) {
+    if (children?.length) {
         childrenHtml += '<div class="children">';
-        for (const child of item.children) {
+        for (const child of children) {
             childrenHtml += simpleToolbarItemFn(child, editor);
         }
         childrenHtml += '</div>';

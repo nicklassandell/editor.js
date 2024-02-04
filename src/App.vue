@@ -42,13 +42,13 @@
 				name: 'Hero 1',
 				class: 'text-hero-1',
 				tag: 'h3',
-				allowTagChange: true,
+				allowedTags: ['h1', 'h2', 'h3'],
 			},
 			{
 				name: 'Hero 2',
 				class: 'text-hero-2',
 				tag: 'h3',
-				allowTagChange: true,
+				allowedTags: ['h1', 'h2', 'h3'],
 			},
 		];
 
@@ -58,7 +58,7 @@
 			formats,
 		});
 		editor = new Editor(el.value, {
-			toolbar: 'formatting-styles | italic strong',
+			toolbar: 'formatting-styles formatting-tags | italic strong',
 		});
 		editor.use(inlineBasics);
 		editor.use(formattingPlugin)

@@ -25,7 +25,38 @@ export class FormattingPlugin implements EditorPlugin {
             children: [],
         };
 
+        const tagToolbarItem: ToolbarItem = {
+            id: 'formatting-tags',
+            content: 'Tags',
+            showCheckFn: () => {
+                return this.activeToolbarButtonId
+                    ? !!this.formats.find((format) => format.id === this.activeToolbarButtonId)?.allowedTags?.length
+                    : false;
+            },
+            children: () => {
+                const active = this.activeToolbarButtonId
+                    ? this.formats.find((format) => format.id === this.activeToolbarButtonId)
+                    : null;
+                if (active && active.allowedTags?.length) {
+                    return active.allowedTags.map((tag: string) => <ToolbarItem>{
+                        id: 'formatting-tag-' + tag,
+                        content: tag.toUpperCase(),
+                        apply: 'format-block',
+                        applyWith: 'formatting-tag-' + tag,
+                    })
+                }
+                return [];
+            }
+        }
+
         this.formats.forEach((format) => {
+            // todo: temporary
+            for (const tag of ['h1', 'h2', 'h3', 'h4']) {
+                this.actions['formatting-tag-' + tag] = {
+                    tag: tag,
+                };
+            }
+
             const actionId = (format.id).replace('--', '-');
             this.actions[actionId] = {
                 tag: format.tag,
@@ -46,6 +77,7 @@ export class FormattingPlugin implements EditorPlugin {
 
         editorInstance.registerActionHandler('format-block', this.formatBlockActionHandler.bind(this));
         editorInstance.registerToolbarItem(rootToolbarItem);
+        editorInstance.registerToolbarItem(tagToolbarItem);
         editorInstance.on('activeBlockElChange', this.computeActiveToolbarBtn.bind(this))
     }
 
@@ -74,27 +106,31 @@ export class FormattingPlugin implements EditorPlugin {
 
     }
 
+    // todo: this needs fixing!
     formatBlockActionHandler({activeBlockEl}, actionId) {
+        console.log(actionId)
         const data = this.actions[actionId];
-        let alreadyHasClasses = true;
-        let alreadyHasTag = true;
+        let alreadyHasClasses = false;
+        let alreadyHasTag = false;
 
         if (data.tag) {
-            if (activeBlockEl.nodeName.toLowerCase() !== data.tag.toLowerCase()) {
-                alreadyHasTag = false;
+            if (activeBlockEl.nodeName.toLowerCase() === data.tag.toLowerCase()) {
+                alreadyHasTag = true;
             }
         }
-        if (data.class.length) {
+        if (data.class?.length) {
+            let has = true;
             for (const cls of data.class) {
                 if (!activeBlockEl.classList.contains(cls)) {
-                    alreadyHasClasses = false;
+                    has = true;
                     break;
                 }
             }
+            alreadyHasClasses = !has;
         }
 
         if (alreadyHasTag && alreadyHasClasses) {
-            // already applied
+            // already applied, remove format
 
             const newP = document.createElement('p');
             newP.innerHTML = activeBlockEl.innerHTML;
@@ -108,9 +144,13 @@ export class FormattingPlugin implements EditorPlugin {
             }
 
             // remove classes
-            for (const cls of data.class) {
-                newP.classList.remove(cls);
+            if (data.class?.length) {
+                for (const cls of data.class) {
+                    newP.classList.remove(cls);
+                }
             }
+
+            console.log('remove')
 
             // replace node with new paragraph
             activeBlockEl.replaceWith(newP);
@@ -120,7 +160,9 @@ export class FormattingPlugin implements EditorPlugin {
             let newNode;
             let isReplacementNode = false;
 
+            console.log(activeBlockEl.nodeName.toLowerCase(), data.tag.toLowerCase())
             if (activeBlockEl.nodeName.toLowerCase() !== data.tag.toLowerCase()) {
+                console.log('new node')
                 // current el nodename is different, create new el, copy innerHTML and attributes
                 newNode = document.createElement(data.tag);
                 newNode.innerHTML = activeBlockEl.innerHTML;
@@ -140,10 +182,14 @@ export class FormattingPlugin implements EditorPlugin {
             }
 
             // strip classes that needs stripping
-            newNode.classList.remove(...data.stripClasses);
+            if (data.stripClasses?.length) {
+                newNode.classList.remove(...data.stripClasses);
+            }
 
             // add new classes
-            newNode.classList.add(...data.class);
+            if (data.class?.length) {
+                newNode.classList.add(...data.class);
+            }
 
             if (isReplacementNode) {
                 activeBlockEl.replaceWith(newNode);

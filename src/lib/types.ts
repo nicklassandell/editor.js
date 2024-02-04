@@ -22,6 +22,6 @@ export type ToolbarItem = {
     applyWith?: string
     action?: string
     renderFn?: Function
-    children?: ToolbarItem[]
-    activeCheckFn?: Function,
+    children?: ToolbarItem[] | Function
+    activeCheckFn?: Function
 }
