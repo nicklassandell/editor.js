@@ -1,4 +1,5 @@
-import { EditorPlugin, ToolbarItem } from '../../types.js';
+import { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '../../types.js';
+import { createSimpleToolbarButton, simpleToolbarButtonFn } from "../../render-fns/toolbar.ts";
 
 export class FormattingPlugin implements EditorPlugin {
     id = 'formatting'
@@ -6,104 +7,116 @@ export class FormattingPlugin implements EditorPlugin {
     formats = []
     availableFormatClasses = []
     actions = {}
-    toolbarButtons: ToolbarItem[] = []
-    activeToolbarButtonId: string | null = null
+    activeBlockFormat: any = null
+    formatsButton: any;
+    tagsButton: any;
+    formatButtons: Record<string, any> = {}
+    tagButtons: Record<string, any> = {}
 
     constructor(options = {}) {
         this.resolveOptions(options);
         this.computeAvailableFormatClasses();
+        console.log(this.formats)
     }
 
-    attach(editorInstance: Editor) {
-        const rootToolbarItem: ToolbarItem = {
+    attach(editor: Editor) {
+        this.createToolbarButtons();
+        this.registerToolbarButtons(editor);
+        this.setupEventListeners(editor);
+    }
+
+    setupEventListeners(editor: Editor) {
+        editor.on('activeBlockElChange', this.findActiveBlockFormat.bind(this, editor))
+        editor.on('activeBlockElChange', this.update.bind(this, editor))
+    }
+
+    registerToolbarButtons(editor: Editor) {
+        editor.registerToolbarItem(<ToolbarItem>{
             id: 'formatting-styles',
-            content: () => {
+            elements: [
+                this.formatsButton.getRootElement(),
+                this.tagsButton.getRootElement(),
+            ],
+        });
+    }
+
+    createToolbarButtons() {
+        // create format buttons
+        this.formats.forEach((format) => {
+            this.formatButtons[format.id] = createSimpleToolbarButton({
+                content: format.name,
+                onClick: () => console.log('clicked', format.name)
+            });
+        })
+
+        this.formatsButton = createSimpleToolbarButton({
+            contentFn: () => {
                 return this.activeToolbarButtonId
                     ? this.formats.find((format) => format.id === this.activeToolbarButtonId).name
                     : 'Formats';
             },
-            children: [],
-        };
+        });
+        this.formatsButton.renderChildren(this.formats.map((format) => this.formatButtons[format.id].getRootElement()))
 
-        const tagToolbarItem: ToolbarItem = {
-            id: 'formatting-tags',
+        this.tagsButton = createSimpleToolbarButton(<SimpleToolbarButtonArguments>{
             content: 'Tags',
-            showCheckFn: () => {
-                return this.activeToolbarButtonId
-                    ? !!this.formats.find((format) => format.id === this.activeToolbarButtonId)?.allowedTags?.length
-                    : false;
-            },
-            children: () => {
-                const active = this.activeToolbarButtonId
-                    ? this.formats.find((format) => format.id === this.activeToolbarButtonId)
-                    : null;
-                if (active && active.allowedTags?.length) {
-                    return active.allowedTags.map((tag: string) => <ToolbarItem>{
-                        id: 'formatting-tag-' + tag,
-                        content: tag.toUpperCase(),
-                        apply: 'format-block',
-                        applyWith: 'formatting-tag-' + tag,
-                    })
-                }
-                return [];
-            }
-        }
-
-        this.formats.forEach((format) => {
-            // todo: temporary
-            for (const tag of ['h1', 'h2', 'h3', 'h4']) {
-                this.actions['formatting-tag-' + tag] = {
-                    tag: tag,
-                };
-            }
-
-            const actionId = (format.id).replace('--', '-');
-            this.actions[actionId] = {
-                tag: format.tag,
-                class: format.class,
-                stripClasses: this.availableFormatClasses.filter((availClass) => !format.class.includes(availClass)),
-            };
-            rootToolbarItem.children.push(<ToolbarItem>{
-                id: 'formatting-' + actionId,
-                content: format.name,
-                apply: 'format-block',
-                applyWith: actionId,
-                activeCheckFn: format.activeCheckFn,
-                weight: format.weight,
-            })
-        })
-
-        this.toolbarButtons = rootToolbarItem.children;
-
-        editorInstance.registerActionHandler('format-block', this.formatBlockActionHandler.bind(this));
-        editorInstance.registerToolbarItem(rootToolbarItem);
-        editorInstance.registerToolbarItem(tagToolbarItem);
-        editorInstance.on('activeBlockElChange', this.computeActiveToolbarBtn.bind(this))
+        });
+        this.tagsButton.hide();
     }
 
-    computeActiveToolbarBtn(activeBlockEl) {
+    update({activeBlockEl}) {
+        // set active class in formats
+        Object.entries(this.formatButtons).forEach(([buttonId, button]) => {
+            if (this.activeBlockFormat && buttonId === this.activeBlockFormat.id) {
+                button.getButtonElement().classList.add('--active')
+            } else {
+                button.getButtonElement().classList.remove('--active');
+            }
+        })
+
+        // update formats root button text
+        this.formatsButton.getButtonElement().innerHTML = (this.activeBlockFormat?.name || 'Formats') + ' <span style="font-size: 10px">▼</span>';
+
+        // update tags
+        this.tagButtons = {};
+        this.tagsButton.destroyChildren();
+        this.tagsButton.hide();
+        if (this.activeBlockFormat && this.activeBlockFormat.allowedTags?.length) {
+            this.activeBlockFormat.allowedTags.forEach((tag: string) => {
+                this.tagButtons['tag-' + tag] = createSimpleToolbarButton({
+                    content: tag.toUpperCase(),
+                    onClick: () => console.log('clicked:', tag)
+                })
+            })
+            this.tagsButton.renderChildren(Object.values(this.tagButtons).map((btn) => btn.getRootElement()));
+            this.tagsButton.getButtonElement().innerHTML = activeBlockEl.nodeName.toUpperCase() + ' <span style="font-size: 10px">▼</span>';;
+            this.tagsButton.show();
+        }
+        return [];
+    }
+
+    findActiveBlockFormat({activeBlockEl}) {
         if (!activeBlockEl) {
-            this.activeToolbarButtonId = null;
+            this.activeBlockFormat = null;
             return false;
         }
 
-        const sorted = [...this.toolbarButtons].sort((a, b) => b.weight - a.weight);
+        const sortedFormats = [...this.formats].sort((a, b) => b.weight - a.weight);
 
-        for (const item of sorted) {
-            const action = this.actions[item.applyWith];
+        const activeBlockFormat = sortedFormats.find((format) => {
             let hasAllClasses = true;
-            for (const cls of action.class) {
+            for (const cls of format.class) {
                 if (!activeBlockEl.classList.contains(cls)) {
                     hasAllClasses = false;
                 }
             }
-            const tagMatch = activeBlockEl.nodeName.toLowerCase() === action.tag?.toLowerCase();
+            const tagMatch = activeBlockEl.nodeName.toLowerCase() === format.tag?.toLowerCase();
             if (hasAllClasses && tagMatch) {
-                this.activeToolbarButtonId = item.applyWith;
-                break;
+                return format;
             }
-        }
+        })
 
+        this.activeBlockFormat = activeBlockFormat || null;
     }
 
     // todo: this needs fixing!

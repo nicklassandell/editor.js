@@ -1,7 +1,7 @@
 import { defaultOptions } from './data/defaultOptions.js';
 import { EditorConfig, EditorPlugin, ToolbarItem } from "./types.ts";
 import { closest } from "./utils/el.ts";
-import { simpleToolbarItemFn, toolbarDividerFn } from "./render-fns/toolbar.ts";
+import { simpleToolbarButtonFn, toolbarDividerFn } from "./render-fns/toolbar.ts";
 
 export class Editor {
     activeBlockEl = null
@@ -43,7 +43,7 @@ export class Editor {
                 this.dispatchEvent('activeInlineElChange', this.activeBlockEl);
             }
 
-            this.updateToolbar();
+            // this.updateToolbar();
         })
 
         this.buildToolbar();
@@ -95,7 +95,7 @@ export class Editor {
         this.el.insertAdjacentHTML('afterbegin', html);
         this.showHideToolbar();
         this.toolbarEl = document.querySelector(`.${this.id} .toolbar`);
-        this.toolbarEl.addEventListener('click', this.onToolbarClick.bind(this));
+        // this.toolbarEl.addEventListener('click', this.onToolbarClick.bind(this));
         this.updateToolbar();
     }
 
@@ -104,19 +104,26 @@ export class Editor {
 
         const layout = this.config.toolbarLayout.split(' ').filter((id) => id === '|' || this.toolbarItems.hasOwnProperty(id));
 
-        // todo: just update active classes instead of rebuilding dom
-        let html = ``;
-
+        const nodes = [];
         for (const itemId of layout) {
             if (itemId === '|') {
-                html += toolbarDividerFn();
+                nodes.push(toolbarDividerFn());
             } else {
                 const item = this.toolbarItems[itemId];
-                html += typeof item.renderFn === 'function' ? item.renderFn(item, this) : simpleToolbarItemFn(item, this);
+                const elements = item.elements;
+                if (elements?.length) {
+                    nodes.push(...elements)
+                }
             }
         }
 
-        this.toolbarEl.innerHTML = html;
+        console.log(nodes)
+
+        if (nodes.length) {
+            for (const node of nodes) {
+                this.toolbarEl.insertAdjacentElement('beforeend', node);
+            }
+        }
     }
 
     showHideToolbar() {

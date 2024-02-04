@@ -17,11 +17,21 @@ export type Editor = {
 
 export type ToolbarItem = {
     id: string
-    content: string
+    content?: string
+    contentFn?: Function
     apply?: string
     applyWith?: string
     action?: string
     renderFn?: Function
-    children?: ToolbarItem[] | Function
+    children?: ToolbarItem[]
+    childrenFn?: Function
     activeCheckFn?: Function
+}
+
+export type SimpleToolbarButtonArguments = {
+    content?: string
+    contentFn?: Function
+    children?: ToolbarItem[]
+    childrenFn?: Function
+    onClick?: Function
 }

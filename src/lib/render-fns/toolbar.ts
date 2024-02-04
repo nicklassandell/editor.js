@@ -1,44 +1,126 @@
-export const simpleToolbarItemFn = (item, editor) => {
-    const attrs = [];
-    // console.log(item)
+import { SimpleToolbarButtonArguments } from "../types.ts";
 
-    if (item.apply) {
-        attrs.push(`data-apply="${item.apply}"`);
-        attrs.push(`data-apply-with="${item.applyWith || ''}"`);
+export const createSimpleToolbarDropdown = () => {
+    const dropdownEl = document.createElement('div');
+    dropdownEl.classList.add('children');// todo: rename class
+    return dropdownEl;
+}
+
+export const createSimpleToolbarButton = ({
+                                              content,
+                                              contentFn,
+                                              onClick
+                                          }: SimpleToolbarButtonArguments) => {
+
+    const toolbarBtnHolderEl = document.createElement('div');
+    toolbarBtnHolderEl.classList.add('toolbar-btn-holder');
+
+    const btnEl = document.createElement('button');
+    btnEl.innerHTML = toolbarButtonContentFn({content, contentFn});
+    if (typeof onClick === 'function') {
+        btnEl.addEventListener('click', onClick);
+    }
+    toolbarBtnHolderEl.insertAdjacentElement('afterbegin', btnEl);
+
+    const getDropdownElement = () => {
+        return toolbarBtnHolderEl.querySelector(':scope > .children') || null;
     }
 
-    const show = typeof item.showCheckFn === 'function' ? item.showCheckFn() : true;
-
-    if (!show) return ''; // todo: not nice
-
-    const children = typeof item.children === 'function' ? item.children() : item.children;
-
-    let childrenHtml = '';
-    if (children?.length) {
-        childrenHtml += '<div class="children">';
-        for (const child of children) {
-            childrenHtml += simpleToolbarItemFn(child, editor);
+    const renderChildren = (childNodes: Element | Element[]) => {
+        let dropdownEl = getDropdownElement();
+        const alreadyExists = !!dropdownEl;
+        if (dropdownEl) {
+            dropdownEl.innerHTML = '';
+        } else {
+            dropdownEl = createSimpleToolbarDropdown();
         }
-        childrenHtml += '</div>';
+
+        childNodes = Array.isArray(childNodes) ? childNodes : (childNodes instanceof Element ? [childNodes] : [])
+
+        if (childNodes?.length) {
+            childNodes.forEach((childNode: Element) => dropdownEl.insertAdjacentElement('beforeend', childNode));
+        }
+
+        if (!alreadyExists) {
+            toolbarBtnHolderEl.insertAdjacentElement('beforeend', dropdownEl)
+        }
     }
 
-    const isActive = item.activeCheckFn ? item.activeCheckFn(editor) : false;
+    const destroyChildren = () => {
+        const dropdownEl = getDropdownElement();
+        if (dropdownEl) {
+            dropdownEl.outerHTML = '';
+        }
+    }
 
-    return `
-        <div class="toolbar-btn-holder">
-            <button ${attrs.join(' ')} class="${isActive ? '--active' : ''}">
-                ${toolbarButtonContentFn(item)}
-            </button>
-            ${childrenHtml}
-        </div>
-    `;
+    const getRootElement = () => toolbarBtnHolderEl;
+    const getButtonElement = () => btnEl;
+
+    const hide = () => toolbarBtnHolderEl.style.display = 'none';
+    const show = () => toolbarBtnHolderEl.style.display = '';
+
+    return {
+        hide,
+        show,
+        getRootElement,
+        getButtonElement,
+        renderChildren,
+        destroyChildren,
+        getDropdownElement,
+    };
+}
+
+export const simpleToolbarButtonFn = ({
+                                          content,
+                                          contentFn,
+                                          children,
+                                          childrenFn,
+                                          onClick
+                                      }: SimpleToolbarButtonArguments) => {
+    const computedChildren = typeof childrenFn === 'function' ? childrenFn() : children;
+
+    let childrenHolderEl;
+
+    if (computedChildren?.length) {
+        childrenHolderEl = document.createElement('div');
+        childrenHolderEl.classList.add('children');
+        for (const childEl of computedChildren) {
+            childrenHolderEl.insertAdjacentElement('beforeend', childEl);
+        }
+    }
+
+    const renderChildren = () => {
+        childrenHolderEl.innerHTML = '';
+        return (childNodes) => {
+            if (childNodes?.length) {
+                childNodes.forEach((childNode) => childrenHolderEl.insertAdjacentElement('afterbegin', childNode));
+            }
+        }
+    }
+
+    const toolbarBtnHolderEl = document.createElement('div');
+    toolbarBtnHolderEl.classList.add('toolbar-btn-holder');
+
+    const btnEl = document.createElement('button');
+    btnEl.innerHTML = toolbarButtonContentFn({content, contentFn});
+    if (typeof onClick === 'function') {
+        btnEl.addEventListener('click', onClick);
+    }
+
+    toolbarBtnHolderEl.insertAdjacentElement('afterbegin', btnEl);
+    if (childrenHolderEl) {
+        toolbarBtnHolderEl.insertAdjacentElement('afterbegin', childrenHolderEl);
+    }
+
+    return toolbarBtnHolderEl;
 }
 
 export const toolbarDividerFn = () => {
-    return '<span class="divider"></span>';
+    const node = document.createElement('span');
+    node.classList.add('divider');
+    return node;
 }
 
-
-export const toolbarButtonContentFn = (item) => {
-    return typeof item.content === 'function' ? item.content(this) : item.content;
+export const toolbarButtonContentFn = ({content, contentFn}) => {
+    return typeof contentFn === 'function' ? contentFn(this) : content;
 }
