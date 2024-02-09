@@ -1,13 +1,16 @@
 import { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '../../types.js';
-import { createSimpleToolbarButton, simpleToolbarButtonFn } from "../../render-fns/toolbar.ts";
+import { createSimpleToolbarButton } from "../../render-fns/toolbar.ts";
+import { changeNodeName, classesMatch, elHasClasses, tagsMatch } from "../../utils/el.ts";
 
 export class FormattingPlugin implements EditorPlugin {
     id = 'formatting'
 
+    editor: Editor | null = null;
+
     formats = []
     availableFormatClasses = []
-    actions = {}
     activeBlockFormat: any = null
+
     formatsButton: any;
     tagsButton: any;
     formatButtons: Record<string, any> = {}
@@ -16,10 +19,11 @@ export class FormattingPlugin implements EditorPlugin {
     constructor(options = {}) {
         this.resolveOptions(options);
         this.computeAvailableFormatClasses();
-        console.log(this.formats)
+        console.log('formats:', this.formats)
     }
 
     attach(editor: Editor) {
+        this.editor = editor;
         this.createToolbarButtons();
         this.registerToolbarButtons(editor);
         this.setupEventListeners(editor);
@@ -41,14 +45,15 @@ export class FormattingPlugin implements EditorPlugin {
     }
 
     createToolbarButtons() {
-        // create format buttons
+        // create format children buttons
         this.formats.forEach((format) => {
             this.formatButtons[format.id] = createSimpleToolbarButton({
                 content: format.name,
-                onClick: () => console.log('clicked', format.name)
+                onClick: () => this.formatBlock(format)
             });
         })
 
+        // create formats button (root)
         this.formatsButton = createSimpleToolbarButton({
             contentFn: () => {
                 return this.activeToolbarButtonId
@@ -56,22 +61,22 @@ export class FormattingPlugin implements EditorPlugin {
                     : 'Formats';
             },
         });
-        this.formatsButton.renderChildren(this.formats.map((format) => this.formatButtons[format.id].getRootElement()))
 
+        // attach format children to root node
+        this.formatsButton.renderChildren(Object.values(this.formatButtons).map((button) => button.getRootElement()))
+
+        // tags button (root node)
         this.tagsButton = createSimpleToolbarButton(<SimpleToolbarButtonArguments>{
             content: 'Tags',
         });
         this.tagsButton.hide();
     }
 
-    update({activeBlockEl}) {
+    update({ activeBlockEl }) {
         // set active class in formats
         Object.entries(this.formatButtons).forEach(([buttonId, button]) => {
-            if (this.activeBlockFormat && buttonId === this.activeBlockFormat.id) {
-                button.getButtonElement().classList.add('--active')
-            } else {
-                button.getButtonElement().classList.remove('--active');
-            }
+            const isActive = this.activeBlockFormat && buttonId === this.activeBlockFormat.id;
+            button.setActive(isActive);
         })
 
         // update formats root button text
@@ -85,17 +90,20 @@ export class FormattingPlugin implements EditorPlugin {
             this.activeBlockFormat.allowedTags.forEach((tag: string) => {
                 this.tagButtons['tag-' + tag] = createSimpleToolbarButton({
                     content: tag.toUpperCase(),
-                    onClick: () => console.log('clicked:', tag)
+                    onClick: () => this.formatBlock({ tag })
                 })
+                if (tag.toLowerCase() === activeBlockEl.nodeName.toLowerCase()) {
+                    this.tagButtons['tag-' + tag].setActive(true);
+                }
             })
             this.tagsButton.renderChildren(Object.values(this.tagButtons).map((btn) => btn.getRootElement()));
-            this.tagsButton.getButtonElement().innerHTML = activeBlockEl.nodeName.toUpperCase() + ' <span style="font-size: 10px">▼</span>';;
+            this.tagsButton.getButtonElement().innerHTML = activeBlockEl.nodeName.toUpperCase() + ' <span style="font-size: 10px">▼</span>';
             this.tagsButton.show();
         }
         return [];
     }
 
-    findActiveBlockFormat({activeBlockEl}) {
+    findActiveBlockFormat({ activeBlockEl }) {
         if (!activeBlockEl) {
             this.activeBlockFormat = null;
             return false;
@@ -104,110 +112,12 @@ export class FormattingPlugin implements EditorPlugin {
         const sortedFormats = [...this.formats].sort((a, b) => b.weight - a.weight);
 
         const activeBlockFormat = sortedFormats.find((format) => {
-            let hasAllClasses = true;
-            for (const cls of format.class) {
-                if (!activeBlockEl.classList.contains(cls)) {
-                    hasAllClasses = false;
-                }
-            }
-            const tagMatch = activeBlockEl.nodeName.toLowerCase() === format.tag?.toLowerCase();
-            if (hasAllClasses && tagMatch) {
-                return format;
-            }
+            const hasAllClasses = elHasClasses(activeBlockEl, format.classes);
+            const tagMatch = format.tag ? tagsMatch(activeBlockEl, format.tag) : true;
+            return hasAllClasses && tagMatch;
         })
 
         this.activeBlockFormat = activeBlockFormat || null;
-    }
-
-    // todo: this needs fixing!
-    formatBlockActionHandler({activeBlockEl}, actionId) {
-        console.log(actionId)
-        const data = this.actions[actionId];
-        let alreadyHasClasses = false;
-        let alreadyHasTag = false;
-
-        if (data.tag) {
-            if (activeBlockEl.nodeName.toLowerCase() === data.tag.toLowerCase()) {
-                alreadyHasTag = true;
-            }
-        }
-        if (data.class?.length) {
-            let has = true;
-            for (const cls of data.class) {
-                if (!activeBlockEl.classList.contains(cls)) {
-                    has = true;
-                    break;
-                }
-            }
-            alreadyHasClasses = !has;
-        }
-
-        if (alreadyHasTag && alreadyHasClasses) {
-            // already applied, remove format
-
-            const newP = document.createElement('p');
-            newP.innerHTML = activeBlockEl.innerHTML;
-
-            // copy all attributes to new p el
-            const existingAttributes = activeBlockEl.getAttributeNames();
-            for (const attrName of existingAttributes) {
-                if (existingAttributes[attrName]) {
-                    newP.setAttribute(attrName, existingAttributes[attrName]);
-                }
-            }
-
-            // remove classes
-            if (data.class?.length) {
-                for (const cls of data.class) {
-                    newP.classList.remove(cls);
-                }
-            }
-
-            console.log('remove')
-
-            // replace node with new paragraph
-            activeBlockEl.replaceWith(newP);
-        } else {
-            // let's apply
-
-            let newNode;
-            let isReplacementNode = false;
-
-            console.log(activeBlockEl.nodeName.toLowerCase(), data.tag.toLowerCase())
-            if (activeBlockEl.nodeName.toLowerCase() !== data.tag.toLowerCase()) {
-                console.log('new node')
-                // current el nodename is different, create new el, copy innerHTML and attributes
-                newNode = document.createElement(data.tag);
-                newNode.innerHTML = activeBlockEl.innerHTML;
-
-                // copy attributes
-                const existingAttributes = activeBlockEl.getAttributeNames();
-                for (const attrName of existingAttributes) {
-                    if (existingAttributes[attrName]) {
-                        newNode.setAttribute(attrName, existingAttributes[attrName]);
-                    }
-                }
-
-                isReplacementNode = true;
-            } else {
-                // re-use existing el
-                newNode = activeBlockEl;
-            }
-
-            // strip classes that needs stripping
-            if (data.stripClasses?.length) {
-                newNode.classList.remove(...data.stripClasses);
-            }
-
-            // add new classes
-            if (data.class?.length) {
-                newNode.classList.add(...data.class);
-            }
-
-            if (isReplacementNode) {
-                activeBlockEl.replaceWith(newNode);
-            }
-        }
     }
 
     resolveOptions(options) {
@@ -215,11 +125,12 @@ export class FormattingPlugin implements EditorPlugin {
     }
 
     processFormats(formats) {
-        return formats.map((format) => {
-            const classArr = format.class?.length ? format.class.split(/\s/) : [];
+        // todo: structuredClone should not be necessary
+        return structuredClone(formats).map((format) => {
+            const classArr = format.classes?.length ? format.classes : [];
             format.id = (classArr.length ? classArr.join('_') : format.tag) + '-' + (Math.round(Math.random() * 100000));
             format.weight = classArr.length;
-            format.class = classArr;
+            format.classes = classArr;
             format.activeCheckFn = () => this.activeToolbarButtonId === format.id
             return format;
         })
@@ -228,12 +139,44 @@ export class FormattingPlugin implements EditorPlugin {
 
     computeAvailableFormatClasses() {
         this.availableFormatClasses = [...this.formats.reduce((acc, val) => {
-            if (val.class?.length) {
-                for (const cls of val.class) {
+            if (val.classes?.length) {
+                for (const cls of val.classes) {
                     acc.add(cls);
                 }
             }
             return acc;
         }, new Set())];
+    }
+
+    formatBlock({ tag, defaultTag, classes }) {
+        const { activeBlockEl } = this.editor;
+
+        const applyTag = tag || defaultTag || 'p';
+
+        console.log('applying to el:', activeBlockEl)
+        console.log('applying tag:', applyTag)
+        console.log('applying classes:', classes)
+
+        // console.log('already has classes?', clsMatches);
+        // console.log('already has tag?', tagMatches);
+        // console.log('existing classes:', activeBlockEl.classList)
+        // console.log('new classes:', classes)
+        // console.log('tag and classes match?', tagMatches && clsMatches)
+
+
+        const newNode = changeNodeName(activeBlockEl, applyTag);
+
+        if (classes !== undefined) {
+            // strip classes that needs stripping
+            for (const stripClass of this.availableFormatClasses) {
+                if (classes?.length && classes.includes(stripClass)) continue;
+                newNode.classList.remove(stripClass);
+            }
+
+            // apply new classes
+            newNode.classList.add(...classes);
+        }
+
+        activeBlockEl.replaceWith(newNode);
     }
 }

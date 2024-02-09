@@ -1,7 +1,7 @@
 import { defaultOptions } from './data/defaultOptions.js';
 import { EditorConfig, EditorPlugin, ToolbarItem } from "./types.ts";
 import { closest } from "./utils/el.ts";
-import { simpleToolbarButtonFn, toolbarDividerFn } from "./render-fns/toolbar.ts";
+import { toolbarDividerFn } from "./render-fns/toolbar.ts";
 
 export class Editor {
     activeBlockEl = null
@@ -19,6 +19,7 @@ export class Editor {
     }
 
     constructor(el: HTMLElement, options: EditorConfig = {}) {
+        console.log('editor:', this)
         this.el = el;
         this.id = 'editor-' + Math.round(Math.random() * 100000000);
         this.resolveOptions(options);
@@ -29,25 +30,30 @@ export class Editor {
         this.el.innerHTML = `<div class="content" contenteditable="true">${this.el.innerHTML}</div>`;
         this.contentEl = this.el.querySelector('.content');
 
-        this.contentEl.addEventListener('mouseup', () => {
-            const newActiveBlockEl = closest(this.config.blockTags.join(', '), window.getSelection().anchorNode);
-            const newActiveInlineEl = closest(this.config.inlineTags.join(', '), window.getSelection().anchorNode);
+        if (this.contentEl.innerHTML.length === 0) {
+            this.contentEl.innerHTML = '<p>x</p>';
+        }
 
-            if ((!this.activeBlockEl && newActiveBlockEl) || (this.activeBlockEl && !this.activeBlockEl.isSameNode(newActiveBlockEl))) {
-                this.activeBlockEl = newActiveBlockEl;
-                this.dispatchEvent('activeBlockElChange', this.activeBlockEl);
-            }
+        this.contentEl.addEventListener('keyup', this.findActiveElements.bind(this));
+        this.contentEl.addEventListener('mouseup', this.findActiveElements.bind(this))
 
-            if ((!this.activeInlineEl && newActiveInlineEl) || (this.activeInlineEl && !this.activeInlineEl.isSameNode(newActiveInlineEl))) {
-                this.activeInlineEl = newActiveInlineEl;
-                this.dispatchEvent('activeInlineElChange', this.activeBlockEl);
-            }
-
-            // this.updateToolbar();
-        })
 
         this.buildToolbar();
-        console.log(this)
+    }
+
+    findActiveElements() {
+        const newActiveBlockEl = closest(this.config.blockTags.join(', '), window.getSelection().anchorNode);
+        const newActiveInlineEl = closest(this.config.inlineTags.join(', '), window.getSelection().anchorNode);
+
+        if ((!this.activeBlockEl && newActiveBlockEl) || (this.activeBlockEl && !this.activeBlockEl.isSameNode(newActiveBlockEl))) {
+            this.activeBlockEl = newActiveBlockEl;
+            this.dispatchEvent('activeBlockElChange', this.activeBlockEl);
+        }
+
+        if ((!this.activeInlineEl && newActiveInlineEl) || (this.activeInlineEl && !this.activeInlineEl.isSameNode(newActiveInlineEl))) {
+            this.activeInlineEl = newActiveInlineEl;
+            this.dispatchEvent('activeInlineElChange', this.activeInlineEl);
+        }
     }
 
     use(pluginInstance: EditorPlugin) {
@@ -117,7 +123,7 @@ export class Editor {
             }
         }
 
-        console.log(nodes)
+        console.log('toolbar nodes:', nodes)
 
         if (nodes.length) {
             for (const node of nodes) {

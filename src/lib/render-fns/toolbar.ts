@@ -6,17 +6,13 @@ export const createSimpleToolbarDropdown = () => {
     return dropdownEl;
 }
 
-export const createSimpleToolbarButton = ({
-                                              content,
-                                              contentFn,
-                                              onClick
-                                          }: SimpleToolbarButtonArguments) => {
+export const createSimpleToolbarButton = ({ content, contentFn, onClick }: SimpleToolbarButtonArguments) => {
 
     const toolbarBtnHolderEl = document.createElement('div');
     toolbarBtnHolderEl.classList.add('toolbar-btn-holder');
 
     const btnEl = document.createElement('button');
-    btnEl.innerHTML = toolbarButtonContentFn({content, contentFn});
+    btnEl.innerHTML = toolbarButtonContentFn({ content, contentFn });
     if (typeof onClick === 'function') {
         btnEl.addEventListener('click', onClick);
     }
@@ -59,9 +55,18 @@ export const createSimpleToolbarButton = ({
     const hide = () => toolbarBtnHolderEl.style.display = 'none';
     const show = () => toolbarBtnHolderEl.style.display = '';
 
+    const setActive = (bool) => {
+        if (bool) {
+            btnEl.classList.add('--active')
+        } else {
+            btnEl.classList.remove('--active')
+        }
+    }
+
     return {
         hide,
         show,
+        setActive,
         getRootElement,
         getButtonElement,
         renderChildren,
@@ -70,57 +75,12 @@ export const createSimpleToolbarButton = ({
     };
 }
 
-export const simpleToolbarButtonFn = ({
-                                          content,
-                                          contentFn,
-                                          children,
-                                          childrenFn,
-                                          onClick
-                                      }: SimpleToolbarButtonArguments) => {
-    const computedChildren = typeof childrenFn === 'function' ? childrenFn() : children;
-
-    let childrenHolderEl;
-
-    if (computedChildren?.length) {
-        childrenHolderEl = document.createElement('div');
-        childrenHolderEl.classList.add('children');
-        for (const childEl of computedChildren) {
-            childrenHolderEl.insertAdjacentElement('beforeend', childEl);
-        }
-    }
-
-    const renderChildren = () => {
-        childrenHolderEl.innerHTML = '';
-        return (childNodes) => {
-            if (childNodes?.length) {
-                childNodes.forEach((childNode) => childrenHolderEl.insertAdjacentElement('afterbegin', childNode));
-            }
-        }
-    }
-
-    const toolbarBtnHolderEl = document.createElement('div');
-    toolbarBtnHolderEl.classList.add('toolbar-btn-holder');
-
-    const btnEl = document.createElement('button');
-    btnEl.innerHTML = toolbarButtonContentFn({content, contentFn});
-    if (typeof onClick === 'function') {
-        btnEl.addEventListener('click', onClick);
-    }
-
-    toolbarBtnHolderEl.insertAdjacentElement('afterbegin', btnEl);
-    if (childrenHolderEl) {
-        toolbarBtnHolderEl.insertAdjacentElement('afterbegin', childrenHolderEl);
-    }
-
-    return toolbarBtnHolderEl;
-}
-
 export const toolbarDividerFn = () => {
     const node = document.createElement('span');
     node.classList.add('divider');
     return node;
 }
 
-export const toolbarButtonContentFn = ({content, contentFn}) => {
+export const toolbarButtonContentFn = ({ content, contentFn }) => {
     return typeof contentFn === 'function' ? contentFn(this) : content;
 }

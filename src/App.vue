@@ -7,7 +7,9 @@
 	import './lib/editor.scss';
 
 	const el = ref();
-	let editor = ref();
+	const el2 = ref();
+	const editor = ref();
+	const editor2 = ref();
 
 	onMounted(() => {
 
@@ -31,60 +33,63 @@
 			{
 				name: 'Eyebrow',
 				tag: 'p',
-				class: 'text-eyebrow',
+				classes: ['text-eyebrow'],
 			},
 			{
 				name: 'Double class',
 				tag: 'p',
-				class: 'double-1 double-2',
+				classes: ['double-1', 'double-2'],
 			},
 			{
 				name: 'Hero 1',
-				class: 'text-hero-1',
-				tag: 'h3',
+				classes: ['text-hero-1'],
+				defaultTag: 'h3',
 				allowedTags: ['h1', 'h2', 'h3'],
 			},
 			{
 				name: 'Hero 2',
-				class: 'text-hero-2',
-				tag: 'h3',
+				classes: ['text-hero-2'],
+				defaultTag: 'h3',
 				allowedTags: ['h1', 'h2', 'h3'],
 			},
 		];
+		// const editors = [{ e: el, ed: editor }, { e: el2, ed: editor2 }];
+		const editors = [{ e: el, ed: editor }];
+		for (const {e, ed} of editors) {
+			ed.value = new Editor(e.value, {
+				toolbar: 'formatting-styles formatting-tags | italic strong',
+			});
 
-		const inlineBasics = new InlineBasicsPlugin();
+			const inlineBasics = new InlineBasicsPlugin();
 
-		const formattingPlugin = new FormattingPlugin({
-			formats,
-		});
-		editor = new Editor(el.value, {
-			toolbar: 'formatting-styles formatting-tags | italic strong',
-		});
-		editor.use(inlineBasics);
-		editor.use(formattingPlugin)
-		editor.init();
+			const formattingPlugin = new FormattingPlugin({
+				formats,
+			});
+			ed.value.use(inlineBasics);
+			ed.value.use(formattingPlugin)
+			ed.value.init();
 
-		editor.value = editor;
+		}
 	})
 	onUnmounted(() => {
 		editor.value.destroy();
+		// editor2.value.destroy();
 	})
 </script>
 
 <template>
 	<div ref="el" class="el editor">
-		<p>This is a paragraph</p>
 		<h1>This is a H1</h1>
-		<h2>This is a H2</h2>
-		<h3>This is a H3</h3>
+<!--		<h2>This is a H2</h2>-->
+<!--		<h3>This is a H3</h3>-->
 		<p class="double-1 double-2">This is a p with 2 classes</p>
-		<p>This is a paragraph</p>
 		<p class="text-eyebrow">this is an eyebrow</p>
 		<h3 class="text-hero-1">This is a hero 1</h3>
-		<h3 class="text-hero-2">This is a hero 2</h3>
-		<p>this is yet another paragraph</p>
+		<h2 class="text-hero-2">This is a hero 2</h2>
+		<p>this is yet <i>another</i> paragraph</p>
 	</div>
-	<p>outside</p>
+	<br><br><br>
+	<div ref="el2" class="el editor"></div>
 </template>
 
 <style>
@@ -98,7 +103,7 @@
 
 	body {
 		margin: 0;
-		padding: 80px;
+		padding: 50px;
 		line-height: 1.2;
 	}
 

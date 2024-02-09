@@ -13,3 +13,67 @@ export const closest = (tag: string, startNode: Node): Element | null => {
     }
     return null;
 }
+
+export const elHasClasses = (el, classes) => {
+    for (const cls of classes) {
+        if (!el.classList.contains(cls)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+export const classesMatch = (el, classes) => {
+    let classesMatch = false;
+
+    if (classes?.length) {
+        let hasAll = true;
+
+        for (const cls of classes) {
+            if (!el.classList.contains(cls)) {
+                hasAll = false;
+                break;
+            }
+        }
+
+        classesMatch = hasAll;
+    }
+
+    return classesMatch;
+}
+
+export const tagsMatch = (el, tag) => {
+    let tagMatches = false;
+
+    if (tag) {
+        if (el.nodeName.toLowerCase() === tag.toLowerCase()) {
+            tagMatches = true;
+        }
+    }
+
+    return tagMatches;
+}
+
+export const changeNodeName = (el, newTag) => {
+    let newNode;
+
+    if (el.nodeName.toLowerCase() !== newTag.toLowerCase()) {
+        newNode = document.createElement(newTag);
+        newNode.innerHTML = el.innerHTML;
+        newNode.classList = el.classList;
+        // todo: copy allowed attributes
+    } else {
+        newNode = el;
+    }
+
+    return newNode;
+}
+
+
+// copy attributes
+// const existingAttributes = activeBlockEl.getAttributeNames();
+// for (const attrName of existingAttributes) {
+//     if (existingAttributes[attrName]) {
+//         newNode.setAttribute(attrName, existingAttributes[attrName]);
+//     }
+// }
