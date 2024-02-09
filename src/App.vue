@@ -4,6 +4,7 @@
 	import { Editor } from './lib/editor.ts';
 	import { InlineBasicsPlugin } from './lib/plugins/inline-basics/index.ts';
 	import { FormattingPlugin } from './lib/plugins/formatting/index.ts';
+	import { LinksPlugin } from './lib/plugins/links/index.ts';
 	import './lib/editor.scss';
 
 	const el = ref();
@@ -57,7 +58,7 @@
 		const editors = [{ e: el, ed: editor }];
 		for (const {e, ed} of editors) {
 			ed.value = new Editor(e.value, {
-				toolbar: 'formatting-styles formatting-tags | italic strong',
+				toolbar: 'formatting-styles formatting-tags | italic strong | link',
 			});
 
 			const inlineBasics = new InlineBasicsPlugin();
@@ -65,6 +66,7 @@
 			const formattingPlugin = new FormattingPlugin({
 				formats,
 			});
+			ed.value.use(new LinksPlugin())
 			ed.value.use(inlineBasics);
 			ed.value.use(formattingPlugin)
 			ed.value.init();

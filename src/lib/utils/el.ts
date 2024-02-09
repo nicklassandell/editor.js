@@ -69,6 +69,21 @@ export const changeNodeName = (el, newTag) => {
     return newNode;
 }
 
+export const isLinkEl = (el) => {
+    return el?.nodeName === 'A';
+}
+
+export const unwrapEl = (el) => {
+    el.outerHTML = el.innerHTML;
+}
+
+export const wrapRange = (range, tag) => {
+    const wrapperEl = document.createElement(tag);
+    wrapperEl.textContent = range.toString();
+    range.surroundContents(wrapperEl);
+    return wrapperEl;
+}
+
 
 // copy attributes
 // const existingAttributes = activeBlockEl.getAttributeNames();

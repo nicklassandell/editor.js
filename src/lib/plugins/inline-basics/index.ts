@@ -1,4 +1,4 @@
-import { closest } from '../../utils/el';
+import { closest, unwrapEl, wrapRange } from '../../utils/el';
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
 import { createSimpleToolbarButton } from "../../render-fns/toolbar.ts";
 
@@ -44,35 +44,12 @@ export class InlineBasicsPlugin implements EditorPlugin {
         if (!selection.anchorNode) return;
 
         const range = selection.getRangeAt(0);
-
-        const wrapperEl = document.createElement(tag);
-        // wrapperEl.appendChild(range.extractContents());
-        wrapperEl.textContent = range.toString();
-
         const existingTag = closest(tag, range.commonAncestorContainer);
+
         if (existingTag) {
-            // remove
-            console.log('removing')
-            const newRange = document.createRange();
-            newRange.selectNodeContents(existingTag);
-            selection.removeAllRanges();
-            selection.addRange(newRange);
-
-            existingTag.outerHTML = existingTag.innerHTML;
-            // existingTag.parentNode.replaceChild(existingTag.firstChild, existingTag)
+            unwrapEl(existingTag);
         } else if (!selection.isCollapsed) {
-            // add
-            console.log('wrapping')
-            range.surroundContents(wrapperEl);
-            const textNode = wrapperEl.firstChild as Node;
-
-            const newRange = document.createRange();
-            newRange.selectNodeContents(textNode);
-
-            // const selection = window.getSelection();
-            // selection.removeAllRanges();
-            // selection.addRange(newRange);
-            // this.setSelection(selection)
+            wrapRange(range, tag);
         }
     }
 }
