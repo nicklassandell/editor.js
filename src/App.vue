@@ -128,12 +128,14 @@
 		border-left: 5px solid red;
 		font-size: 70px;
 		font-weight: bold;
+		padding-left: 10px;
 	}
 
 	.text-hero-2 {
 		border-left: 10px solid red;
 		font-size: 50px;
 		font-weight: bold;
+		padding-left: 10px;
 	}
 
 	.text-eyebrow {

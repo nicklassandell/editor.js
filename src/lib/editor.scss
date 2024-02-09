@@ -71,7 +71,12 @@
         p, div, h1, h2, h3, h4 {
             position: relative;
             display: block;
-            margin: 0 0 1em;
+            margin: 0;
+            line-height: 1;
+
+            &:not(:first-child) {
+                margin-top: 24px;
+            }
 
             &::before {
                 position: absolute;
