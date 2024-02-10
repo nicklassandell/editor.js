@@ -84,6 +84,69 @@ export const wrapRange = (range, tag) => {
     return wrapperEl;
 }
 
+export const getElStartIndexRelativeToParent = (parentEl, innerEl) => {
+    let index = 0;
+    for (const childNode of parentEl.childNodes) {
+        if (childNode instanceof HTMLElement && childNode.isSameNode(innerEl)) {
+            break;
+        }
+        if (childNode instanceof HTMLElement) {
+            index += childNode.innerText.length;
+        } else {
+            index += childNode.textContent.length;
+        }
+    }
+    return index;
+}
+
+export const setSelectionWithinElement = (el, startPos, endPos) => {
+    const range = document.createRange();
+    let length = 0;
+    let hasStart = false;
+
+    // todo: handle nested els?
+    for (const childNode of el.childNodes) {
+        let thisLength = 0;
+        if (childNode instanceof HTMLElement) {
+            length += childNode.innerText.length;
+            thisLength = childNode.innerText.length;
+        } else {
+            length += childNode.textContent.length;
+            thisLength = childNode.textContent.length;
+        }
+
+        if (startPos <= length) {
+            const corrected = thisLength + (startPos - length);
+            range.setStart(childNode, corrected);
+            hasStart = true;
+        }
+        if (hasStart && endPos <= length) {
+            const corrected = thisLength + (endPos - length);
+            range.setEnd(childNode, corrected);
+            const selection = window.getSelection() as Selection;
+            selection.empty();
+            selection.addRange(range);
+            return true;
+        }
+    }
+    return false;
+}
+
+export const expandSelectionByWord = () => {
+    // todo: check for whitespace around caret first?
+    const selection = window.getSelection() as Selection;
+    selection.modify('extend', 'backward', 'word');
+    const start = Math.min(selection.anchorOffset, selection.focusOffset)
+    selection.modify('extend', 'forward', 'word');
+    selection.modify('extend', 'forward', 'word');
+    const end = Math.max(selection.anchorOffset, selection.focusOffset)
+
+    const range = selection.getRangeAt(0);
+    range.setStart(range.commonAncestorContainer, start);
+    range.setEnd(range.commonAncestorContainer, end);
+    selection.empty();
+    selection.addRange(range);
+}
 
 // copy attributes
 // const existingAttributes = activeBlockEl.getAttributeNames();

@@ -84,7 +84,7 @@
 		<h1>This is a H1</h1>
 <!--		<h2>This is a H2</h2>-->
 <!--		<h3>This is a H3</h3>-->
-		<p class="double-1 double-2">This is a p with 2 classes</p>
+		<p class="double-1 double-2"><strong>This</strong> is a p <strong>with</strong> 2 classes</p>
 		<p class="text-eyebrow">this is an eyebrow</p>
 		<h3 class="text-hero-1">This is a hero 1</h3>
 		<h2 class="text-hero-2">This is a hero 2</h2>

@@ -34,11 +34,23 @@ export class Editor {
             this.contentEl.innerHTML = '<p>x</p>';
         }
 
-        this.contentEl.addEventListener('keyup', this.findActiveElements.bind(this));
-        this.contentEl.addEventListener('mouseup', this.findActiveElements.bind(this))
+        this.contentEl.addEventListener('keyup', this.update.bind(this));
+        this.contentEl.addEventListener('mouseup', this.update.bind(this))
 
+        // disable native formatting keyboard shortcuts, will add our own
+        // todo: refactor elsewhere.
+        this.contentEl.addEventListener('keydown', (e) => {
+            if (['b', 'i', 'u'].includes(e.key) && e.composed) {
+                e.preventDefault();
+            }
+        });
 
         this.buildToolbar();
+    }
+
+    update() {
+        console.log('editor: something changed')
+        this.findActiveElements();
     }
 
     findActiveElements() {
