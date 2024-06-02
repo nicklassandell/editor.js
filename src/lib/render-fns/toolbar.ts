@@ -6,10 +6,13 @@ export const createSimpleToolbarDropdown = () => {
     return dropdownEl;
 }
 
-export const createSimpleToolbarButton = ({ content, contentFn, onClick }: SimpleToolbarButtonArguments) => {
+export const createSimpleToolbarButton = ({ content, contentFn, onClick, show: shouldShow }: SimpleToolbarButtonArguments) => {
 
     const toolbarBtnHolderEl = document.createElement('div');
     toolbarBtnHolderEl.classList.add('toolbar-btn-holder');
+    if (shouldShow === false) {
+        toolbarBtnHolderEl.style.display = 'none';
+    }
 
     const btnEl = document.createElement('button');
     btnEl.innerHTML = toolbarButtonContentFn({ content, contentFn });
@@ -54,6 +57,7 @@ export const createSimpleToolbarButton = ({ content, contentFn, onClick }: Simpl
 
     const hide = () => toolbarBtnHolderEl.style.display = 'none';
     const show = () => toolbarBtnHolderEl.style.display = '';
+    const setVisibility = (bool) => bool ? show() : hide();
 
     const setActive = (bool) => {
         if (bool) {
@@ -64,6 +68,7 @@ export const createSimpleToolbarButton = ({ content, contentFn, onClick }: Simpl
     }
 
     return {
+        setVisibility,
         hide,
         show,
         setActive,

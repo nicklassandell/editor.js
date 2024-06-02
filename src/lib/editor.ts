@@ -1,6 +1,13 @@
 import { defaultOptions } from './data/defaultOptions.js';
 import { EditorConfig, EditorPlugin, ToolbarItem } from "./types.ts";
-import { closest } from "./utils/el.ts";
+import {
+    cleanupInlineStyles,
+    closest,
+    getEl,
+    insertHTMLAtCurrentCaretPosition, insertTextAtCaret,
+    sanitizeHtml,
+    stripIllegalTags
+} from "./utils/el.ts";
 import { toolbarDividerFn } from "./render-fns/toolbar.ts";
 
 export class Editor {
@@ -30,12 +37,24 @@ export class Editor {
         this.el.innerHTML = `<div class="content" contenteditable="true">${this.el.innerHTML}</div>`;
         this.contentEl = this.el.querySelector('.content');
 
-        if (this.contentEl.innerHTML.length === 0) {
-            this.contentEl.innerHTML = '<p>x</p>';
-        }
-
         this.contentEl.addEventListener('keyup', this.update.bind(this));
         this.contentEl.addEventListener('mouseup', this.update.bind(this))
+        this.contentEl.addEventListener('click', (e) => {
+            if (e.shiftKey) {
+                this.blockifyRootNodes();
+                this.cleanupInlineStyles();
+            }
+        })
+        this.contentEl.addEventListener('paste', (e) => {
+            e.preventDefault();
+
+            const clipboardData = e.clipboardData;
+            const pastedText = clipboardData.getData('text/plain');
+            const processedText = pastedText;
+
+            document.execCommand('insertText', false, processedText);
+            ;
+        })
 
         // disable native formatting keyboard shortcuts, will add our own
         // todo: refactor elsewhere.
@@ -49,22 +68,85 @@ export class Editor {
     }
 
     update() {
-        console.log('editor: something changed')
+        // console.log('editor: something changed')
         this.findActiveElements();
     }
 
+    blockifyRootNodes() {
+        const els = [];
+        let newNode = document.createElement('p');
+        let didCorrect = false;
+        for (const node of this.contentEl.childNodes) {
+            // if text node
+            if (node instanceof Text) {
+                // console.log('should be text node')
+                if (node.textContent) {
+                    newNode.insertAdjacentText('beforeend', node.textContent);
+                }
+                didCorrect = true;
+
+            } else if (node instanceof HTMLElement) {
+                let el = getEl(node);
+                const isBlockEl = el.matches(this.config.blockTags.join(', '));
+
+                if (el && el.isSameNode(this.contentEl)) {
+                    el = null;
+                }
+
+                // if inline el
+                if (!isBlockEl) {
+                    // idk why i need to do node.outerHTML instead of incertAdjacentElement with node. It seems to skip some nodes if we do that.
+                    newNode.insertAdjacentHTML('beforeend', node.outerHTML);
+                    didCorrect = true;
+                    continue;
+                }
+
+                // at this point it must be a block el
+                // first append current paragraph node to els and make a new empty one
+                if (newNode.innerHTML) {
+                    els.push(newNode);
+                    newNode = document.createElement('p');
+                }
+                // then append block el
+                els.push(el);
+            }
+        }
+
+        if (didCorrect) {
+            if (newNode.innerHTML) {
+                els.push(newNode);
+            }
+            this.contentEl.innerHTML = '';
+            for (const el of els) {
+                this.contentEl.insertAdjacentElement('beforeend', el);
+                console.log(el);
+            }
+            const lastBlock = this.contentEl.children[this.contentEl.children.length - 1];
+            const lastNode = lastBlock.childNodes[lastBlock.childNodes.length - 1];
+            console.log(lastNode, lastNode.length)
+            window.getSelection().setPosition(lastNode, lastNode.length)
+        }
+    }
+
+    cleanupInlineStyles() {
+        cleanupInlineStyles(this.contentEl);
+    }
+
     findActiveElements() {
-        const newActiveBlockEl = closest(this.config.blockTags.join(', '), window.getSelection().anchorNode);
-        const newActiveInlineEl = closest(this.config.inlineTags.join(', '), window.getSelection().anchorNode);
+        const anchorNode = window.getSelection().anchorNode;
+        let newActiveBlockEl = closest(this.config.blockTags.join(', '), anchorNode);
+        const newActiveInlineEl = closest(this.config.inlineTags.join(', '), anchorNode);
+
+        if (newActiveBlockEl && this.contentEl.isSameNode(newActiveBlockEl)) {
+            newActiveBlockEl = null;
+        }
 
         if ((!this.activeBlockEl && newActiveBlockEl) || (this.activeBlockEl && !this.activeBlockEl.isSameNode(newActiveBlockEl))) {
-            this.activeBlockEl = newActiveBlockEl;
-            this.dispatchEvent('activeBlockElChange', this.activeBlockEl);
+            this.setActiveBlockEl(newActiveBlockEl);
         }
 
         if ((!this.activeInlineEl && newActiveInlineEl) || (this.activeInlineEl && !this.activeInlineEl.isSameNode(newActiveInlineEl))) {
-            this.activeInlineEl = newActiveInlineEl;
-            this.dispatchEvent('activeInlineElChange', this.activeInlineEl);
+            this.setActiveInlineEl(newActiveInlineEl);
         }
     }
 
@@ -108,18 +190,23 @@ export class Editor {
         this.config.toolbarLayout = options.toolbar || defaultOptions.toolbarLayout;
     }
 
+    setActiveBlockEl(blockEl) {
+        this.activeBlockEl = blockEl;
+        this.dispatchEvent('activeBlockElChange', this.activeBlockEl);
+    }
+    setActiveInlineEl(inlineEl) {
+        this.activeInlineEl = inlineEl;
+        this.dispatchEvent('activeInlineElChange', this.activeInlineEl);
+    }
+
     buildToolbar() {
         const html = `<div class="toolbar"></div>`;
         this.el.insertAdjacentHTML('afterbegin', html);
-        this.showHideToolbar();
         this.toolbarEl = document.querySelector(`.${this.id} .toolbar`);
-        // this.toolbarEl.addEventListener('click', this.onToolbarClick.bind(this));
         this.updateToolbar();
     }
 
     updateToolbar() {
-        //this.findActiveToolbarBtn();
-
         const layout = this.config.toolbarLayout.split(' ').filter((id) => id === '|' || this.toolbarItems.hasOwnProperty(id));
 
         const nodes = [];
@@ -135,35 +222,10 @@ export class Editor {
             }
         }
 
-        console.log('toolbar nodes:', nodes)
-
         if (nodes.length) {
             for (const node of nodes) {
                 this.toolbarEl.insertAdjacentElement('beforeend', node);
             }
-        }
-    }
-
-    showHideToolbar() {
-        // if (this.toolbarEl) {
-        // 	if (this.selection) {
-        // 		this.toolbarEl.style.display = null;
-        // 	} else {
-        // 		this.toolbarEl.style.display = 'none';
-        // 	}
-        // }
-    }
-
-    onToolbarClick(e) {
-        const toolbarEl = e.target.closest('[data-action-id], [data-apply]');
-        if (toolbarEl) {
-            const apply = toolbarEl.dataset.apply;
-            if (apply) {
-                const applyWith = toolbarEl.dataset.applyWith;
-                this.actionHandlers[apply](this, applyWith);
-            }
-
-            this.updateToolbar();
         }
     }
 }

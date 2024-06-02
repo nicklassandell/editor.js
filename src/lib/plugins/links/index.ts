@@ -1,11 +1,13 @@
 import { closest, isLinkEl, unwrapEl, wrapRange } from '../../utils/el';
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
 import { createSimpleToolbarButton } from "../../render-fns/toolbar.ts";
+import { Modal } from '../../utils/modal.js';
 
 export class LinksPlugin implements EditorPlugin {
     id = 'links'
 
-    linkButton = null
+    editLinkButton = null
+    removeLinkButton = null
 
     editor = null
 
@@ -13,34 +15,46 @@ export class LinksPlugin implements EditorPlugin {
 
         this.editor = editor;
 
-        this.linkButton = createSimpleToolbarButton({
+        this.editLinkButton = createSimpleToolbarButton({
             content: 'Link',
-            onClick: (e) => this.handleClick(e),
+            onClick: (e) => this.handleEditClick(e),
         });
         editor.registerToolbarItem(<ToolbarItem>{
-            id: 'link',
-            elements: [this.linkButton.getRootElement()],
+            id: 'edit-link',
+            elements: [this.editLinkButton.getRootElement()],
+        });
+
+        this.removeLinkButton = createSimpleToolbarButton({
+            content: 'Remove Link',
+            onClick: (e) => this.handleRemoveClick(e),
+            show: false,
+        });
+        editor.registerToolbarItem(<ToolbarItem>{
+            id: 'remove-link',
+            elements: [this.removeLinkButton.getRootElement()],
         });
 
         // button active states
         editor.on('activeInlineElChange', (inlineEl) => {
-            const isLinkEl = inlineEl && !!inlineEl.closest('a');
-            this.linkButton.setActive(isLinkEl);
+            const isLinkEl = inlineEl ? !!inlineEl.closest('a') : false;
+            this.editLinkButton.setActive(isLinkEl);
+            this.removeLinkButton.setVisibility(isLinkEl);
         })
     }
 
-    handleClick(e) {
+    handleRemoveClick() {
+        const linkEl = this.editor.activeInlineEl && this.editor.activeInlineEl.closest('a');
+        if (!linkEl) return;
+        linkEl.outerHTML = linkEl.innerHTML;
+        this.editor.setActiveInlineEl(null);
+    }
+
+    handleEditClick(e) {
         const selection = window.getSelection() as Selection;
         if (!selection.anchorNode) return;
 
         const range = selection.getRangeAt(0);
         let linkEl = closest('a', range.commonAncestorContainer);
-
-        // remove link if it exists and shift is pressed
-        if (e.shiftKey && linkEl) {
-            unwrapEl(linkEl);
-            return;
-        }
 
         // if no link exists and nothing is selected, exit
         if (!linkEl && !range.toString()) {
@@ -52,9 +66,41 @@ export class LinksPlugin implements EditorPlugin {
             linkEl = wrapRange(range, 'a');
         }
 
-        const href = linkEl.getAttribute('href') || '';
-        const url = prompt('Link URL', href);
+        const currHref = linkEl.getAttribute('href') || '';
 
-        linkEl.setAttribute('href', url);
+        const modal = new Modal();
+        modal.setTitle('Edit Link');
+        modal.setContentHTML(`
+            <p style="margin: 0 0 4px; font-size: .9rem;">Link URL</p>
+            <input class="editor-modal-input" placeholder="Enter link url..." value="${currHref}">
+        `);
+        modal.setFooterActions([
+            {
+                btnStyle: 'secondary',
+                text: 'Cancel',
+                onClick() {
+                    modal.destroy();
+                }
+            },
+            {
+                btnStyle: 'secondary',
+                text: 'Remove Link',
+                onClick: () => {
+                    linkEl.outerHTML = linkEl.innerHTML;
+                    modal.destroy();
+                    this.editor.setActiveInlineEl(null);
+                }
+            },
+            {
+                btnStyle: 'primary',
+                text: 'Save',
+                onClick() {
+                    const newHref = modal.contentEl.querySelector('.editor-modal-input').value;
+                    linkEl.setAttribute('href', newHref);
+                    modal.destroy();
+                }
+            }
+        ])
+        modal.contentEl.querySelector('input').focus();
     }
 }

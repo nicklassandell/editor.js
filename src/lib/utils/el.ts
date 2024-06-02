@@ -14,6 +14,11 @@ export const closest = (tag: string, startNode: Node): Element | null => {
     return null;
 }
 
+// if node is text node, returns parent element
+export const getEl = (node) => {
+    return node instanceof Text ? node.parentElement : node;
+}
+
 export const elHasClasses = (el, classes) => {
     for (const cls of classes) {
         if (!el.classList.contains(cls)) {
@@ -22,6 +27,72 @@ export const elHasClasses = (el, classes) => {
     }
     return true;
 }
+
+export const sanitizeHtml = (html) => {
+
+    const rootNode = document.createElement('div');
+    rootNode.innerHTML = html;
+
+    console.log(rootNode.children)
+
+    if (rootNode?.children?.length) {
+        for (const child of rootNode.children) {
+            // cleanupInlineStyles(child);
+            stripIllegalTags(child);
+        }
+    }
+    console.log(rootNode.innerHTML)
+    return rootNode.innerHTML;
+}
+
+export const cleanupInlineStyles = (el) => {
+    el.removeAttribute('style');
+}
+
+export const stripIllegalTags = (el) => {
+    if (el.parentNode && !['P', 'H1', 'H2', 'H3', 'H4', 'EM', 'STRONG'].includes(el.nodeName)) {
+        el.outerHTML = ' ' + el.innerHTML + ' ';
+    }
+}
+
+export const insertHTMLAtCurrentCaretPosition = (html) => {
+    const selection = getSelection();
+
+    if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+
+        const textNode = document.createTextNode(html);
+        range.insertNode(html);
+
+        console.log('inserting:', textNode)
+        range.deleteContents();
+        range.insertNode(textNode);
+
+        // Place the caret after the inserted content
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}
+
+export const insertTextAtCaret = (text) => {
+    const selection = window.getSelection();
+    if (selection.rangeCount) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        const textNode = document.createTextNode(text);
+        range.insertNode(textNode);
+
+        // Move the caret to the end of the inserted text
+        range.setStartAfter(textNode);
+        range.collapse(true);
+        // Restore the selection
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+};
+
+
 
 export const classesMatch = (el, classes) => {
     let classesMatch = false;
@@ -117,12 +188,20 @@ export const setSelectionWithinElement = (el, startPos, endPos) => {
 
         if (startPos <= length) {
             const corrected = thisLength + (startPos - length);
-            range.setStart(childNode, corrected);
+            try {
+                range.setStart(childNode, corrected);
+            } catch (e) {
+                return;
+            }
             hasStart = true;
         }
         if (hasStart && endPos <= length) {
             const corrected = thisLength + (endPos - length);
-            range.setEnd(childNode, corrected);
+            try {
+                range.setEnd(childNode, corrected);
+            } catch (e) {
+                return;
+            }
             const selection = window.getSelection() as Selection;
             selection.empty();
             selection.addRange(range);
@@ -130,6 +209,69 @@ export const setSelectionWithinElement = (el, startPos, endPos) => {
         }
     }
     return false;
+}
+
+export const expandRangeByWord = () => {
+    // todo: check for whitespace around caret first?
+    const selection = window.getSelection() as Selection;
+    const orgRange = selection.getRangeAt(0)
+
+    if (!selection.isCollapsed) {
+        return selection.getRangeAt(0)
+    }
+
+    const clonedRange = selection.getRangeAt(0).cloneRange();
+
+
+    selection.modify('extend', 'backward', 'word');
+    const start = Math.min(selection.anchorOffset, selection.focusOffset)
+    selection.modify('extend', 'forward', 'word');
+    selection.modify('extend', 'forward', 'word');
+    const end = Math.max(selection.anchorOffset, selection.focusOffset)
+
+    // restore initial range
+    setTimeout(() => {
+        selection.empty();
+        selection.addRange(clonedRange);
+    })
+    console.log('orgRange:', orgRange);
+    console.log('clonedRange:', clonedRange);
+
+    const range = selection.getRangeAt(0);
+    range.setStart(range.commonAncestorContainer, start);
+    range.setEnd(range.commonAncestorContainer, end);
+    return range;
+}
+
+export const expandRangeToWordBoundary = (orgRange: Range) => {
+    const range = orgRange.cloneRange();
+    const startNode = range.startContainer;
+    let startOffset = range.startOffset;
+    const endNode = range.endContainer;
+    let endOffset = range.endOffset;
+
+    // Expand start boundary
+    while (startOffset > 0 && /\w/.test(startNode.textContent[startOffset - 1])) {
+        startOffset--;
+    }
+
+    // Expand end boundary
+    while (endOffset < endNode.textContent.length && /\w/.test(endNode.textContent[endOffset])) {
+        endOffset++;
+    }
+
+    const startOffsetDiff = startOffset - range.startOffset;
+    const endOffsetDiff = endOffset - range.endOffset;
+    console.log('startOffsetDiff', startOffsetDiff, 'endOffsetDiff', endOffsetDiff)
+
+    range.setStart(startNode, startOffset);
+    range.setEnd(endNode, endOffset);
+
+    return {
+        range,
+        startOffsetDiff,
+        endOffsetDiff,
+    }
 }
 
 export const expandSelectionByWord = () => {

@@ -34,4 +34,5 @@ export type SimpleToolbarButtonArguments = {
     children?: ToolbarItem[]
     childrenFn?: Function
     onClick?: Function
+    show?: boolean
 }

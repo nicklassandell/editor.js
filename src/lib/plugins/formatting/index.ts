@@ -153,17 +153,6 @@ export class FormattingPlugin implements EditorPlugin {
 
         const applyTag = tag || defaultTag || 'p';
 
-        console.log('applying to el:', activeBlockEl)
-        console.log('applying tag:', applyTag)
-        console.log('applying classes:', classes)
-
-        // console.log('already has classes?', clsMatches);
-        // console.log('already has tag?', tagMatches);
-        // console.log('existing classes:', activeBlockEl.classList)
-        // console.log('new classes:', classes)
-        // console.log('tag and classes match?', tagMatches && clsMatches)
-
-
         const newNode = changeNodeName(activeBlockEl, applyTag);
 
         if (classes !== undefined) {
@@ -178,5 +167,6 @@ export class FormattingPlugin implements EditorPlugin {
         }
 
         activeBlockEl.replaceWith(newNode);
+        this.editor.setActiveBlockEl(newNode);
     }
 }

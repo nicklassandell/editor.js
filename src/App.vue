@@ -54,11 +54,11 @@
 				allowedTags: ['h1', 'h2', 'h3'],
 			},
 		];
-		// const editors = [{ e: el, ed: editor }, { e: el2, ed: editor2 }];
-		const editors = [{ e: el, ed: editor }];
+		const editors = [{ e: el, ed: editor }, { e: el2, ed: editor2 }];
+		// const editors = [{ e: el, ed: editor }];
 		for (const {e, ed} of editors) {
 			ed.value = new Editor(e.value, {
-				toolbar: 'formatting-styles formatting-tags | italic strong | link',
+				toolbar: 'formatting-styles formatting-tags | italic strong | edit-link remove-link',
 			});
 
 			const inlineBasics = new InlineBasicsPlugin();
@@ -75,7 +75,7 @@
 	})
 	onUnmounted(() => {
 		editor.value.destroy();
-		// editor2.value.destroy();
+		editor2.value.destroy();
 	})
 </script>
 
@@ -86,7 +86,7 @@
 <!--		<h3>This is a H3</h3>-->
 		<p class="double-1 double-2"><strong>This</strong> is a p <strong>with</strong> 2 classes</p>
 		<p class="text-eyebrow">this is an eyebrow</p>
-		<h3 class="text-hero-1">This is a hero 1</h3>
+		<h3 class="text-hero-1">This is a <a href="#foo">hero</a> 1</h3>
 		<h2 class="text-hero-2">This is a hero 2</h2>
 		<p>this is yet <i>another</i> paragraph</p>
 	</div>
