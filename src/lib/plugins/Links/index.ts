@@ -6,7 +6,7 @@ import SimpleToolbarButton from "../../class/SimpleToolbarButton";
 import linkIcon from '@/assets/icons/link.svg';
 import removeLinkIcon from '@/assets/icons/remove-link.svg';
 
-export class LinksPlugin implements EditorPlugin {
+export default class LinksPlugin implements EditorPlugin {
     id = 'links'
 
     editLinkButton = null

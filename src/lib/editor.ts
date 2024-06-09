@@ -4,13 +4,9 @@ import {
     cleanupInlineStyles,
     closest,
     getEl,
-    insertHTMLAtCurrentCaretPosition, insertTextAtCaret,
-    sanitizeHtml,
-    stripIllegalTags
 } from "./utils/el.ts";
-import { toolbarDividerFn } from "./render-fns/toolbar.ts";
 
-export class Editor {
+export default class Editor {
     id: string | null = null;
     el: HTMLElement | null = null;
     contentEl: HTMLElement | null = null;
@@ -216,18 +212,23 @@ export class Editor {
     }
 
     updateToolbar() {
-        const layout = this.config.toolbarLayout.split(' ').filter((id) => id === '|' || this.toolbarItems.hasOwnProperty(id));
+        const layout = this.config.toolbarLayout.split(/\s+/g);
 
         const nodes = [];
         for (const itemId of layout) {
-            if (itemId === '|') {
-                nodes.push(toolbarDividerFn());
-            } else {
-                const item = this.toolbarItems[itemId];
-                const elements = item.elements;
-                if (elements?.length) {
-                    nodes.push(...elements)
-                }
+            const item = this.toolbarItems[itemId];
+            if (!item) {
+                continue;
+            }
+            const elements = item.elements;
+            if (elements?.length) {
+                elements.forEach((el) => {
+                    if (typeof el === 'function') {
+                        nodes.push(el());
+                    } else {
+                        nodes.push(el)
+                    }
+                })
             }
         }
 

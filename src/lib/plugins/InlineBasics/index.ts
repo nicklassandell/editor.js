@@ -10,7 +10,7 @@ import SimpleToolbarButton from "../../class/SimpleToolbarButton";
 import italicIcon from '@/assets/icons/italic.svg';
 import boldIcon from '@/assets/icons/bold.svg';
 
-export class InlineBasicsPlugin implements EditorPlugin {
+export default class InlineBasicsPlugin implements EditorPlugin {
     id = 'inline-basics'
     buttons = {}
     editor = null

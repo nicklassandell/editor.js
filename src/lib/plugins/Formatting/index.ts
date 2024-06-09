@@ -3,7 +3,7 @@ import { changeNodeName, elHasClasses, tagsMatch } from "../../utils/el.ts";
 import SimpleToolbarButton from "../../class/SimpleToolbarButton.js";
 import DropdownToolbarButton from "../../class/DropdownToolbarButton.js";
 
-export class FormattingPlugin implements EditorPlugin {
+export default class FormattingPlugin implements EditorPlugin {
     id = 'formatting'
 
     editor: Editor | null = null;
@@ -58,8 +58,6 @@ export class FormattingPlugin implements EditorPlugin {
         this.formatsButton = new DropdownToolbarButton({
             text: 'Formats',
         });
-
-        console.log(this.formatsButton)
 
         // attach format children to root node
         this.formatsButton.renderChildren(Object.values(this.formatButtons).map((button) => button.rootEl))

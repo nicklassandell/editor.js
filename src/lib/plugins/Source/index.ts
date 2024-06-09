@@ -3,7 +3,7 @@ import { Modal } from '../../utils/modal.js';
 import SimpleToolbarButton from '../../class/SimpleToolbarButton.js';
 import sourceCodeIcon from '@/assets/icons/sourcecode.svg';
 
-export class SourcePlugin implements EditorPlugin {
+export default class SourcePlugin implements EditorPlugin {
     id = 'source'
     sourceButton = null
     editor = null

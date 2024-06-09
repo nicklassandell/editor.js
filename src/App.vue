@@ -1,11 +1,12 @@
 <script setup>
 	import { onMounted, onUnmounted, ref } from 'vue';
 
-	import { Editor } from './lib/editor.ts';
-	import { InlineBasicsPlugin } from './lib/plugins/inline-basics/index.ts';
-	import { FormattingPlugin } from './lib/plugins/formatting/index.ts';
-	import { LinksPlugin } from './lib/plugins/links/index.ts';
-	import { SourcePlugin } from './lib/plugins/source/index.ts';
+	import Editor from './lib/editor.ts';
+	import InlineBasicsPlugin from './lib/plugins/InlineBasics/index.ts';
+	import FormattingPlugin from './lib/plugins/Formatting/index.ts';
+	import LinksPlugin from './lib/plugins/Links/index.ts';
+	import SourcePlugin from './lib/plugins/Source/index.ts';
+	import ToolbarDividerPlugin from './lib/plugins/ToolbarDivider/index.ts';
 	import './lib/editor.scss';
 
 	const el = ref();
@@ -62,6 +63,7 @@
 				toolbar: 'formatting-styles formatting-tags | italic strong | edit-link remove-link | source',
 			});
 
+			ed.value.use(new ToolbarDividerPlugin())
 			ed.value.use(new LinksPlugin())
 			ed.value.use(new SourcePlugin());
 			ed.value.use(new InlineBasicsPlugin());
