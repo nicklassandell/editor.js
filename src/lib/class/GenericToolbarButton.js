@@ -19,7 +19,7 @@ export default class GenericToolbarButton {
 		this.rootEl.style.display = 'none';
 	}
 
-	setVisibility() {
-		this.rootEl.style.display === 'none' ? this.show() : this.hide();
+	setVisibility(bool) {
+		bool ? this.show() : this.hide();
 	}
 }
