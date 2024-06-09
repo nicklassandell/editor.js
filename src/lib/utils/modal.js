@@ -4,6 +4,7 @@ export class Modal {
 	el = null;
 	config = {
 		closeOnOutsideClick: true,
+		width: 'sm',
 	}
 	constructor(config) {
 		this.config = { ...this.config, ...(config || {}) };
@@ -24,7 +25,7 @@ export class Modal {
 
 	create() {
 		const html = `
-			<div id="${this.id}" class="editor-modal outer">
+			<div id="${this.id}" class="editor-modal outer --width-${this.config.width}">
 				<div class="inner">
 					<div class="header"><p class="title"></p></div>
 					<div>

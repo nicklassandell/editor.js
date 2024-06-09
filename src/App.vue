@@ -5,6 +5,7 @@
 	import { InlineBasicsPlugin } from './lib/plugins/inline-basics/index.ts';
 	import { FormattingPlugin } from './lib/plugins/formatting/index.ts';
 	import { LinksPlugin } from './lib/plugins/links/index.ts';
+	import { SourcePlugin } from './lib/plugins/source/index.ts';
 	import './lib/editor.scss';
 
 	const el = ref();
@@ -56,19 +57,17 @@
 		];
 		const editors = [{ e: el, ed: editor }, { e: el2, ed: editor2 }];
 		// const editors = [{ e: el, ed: editor }];
-		for (const {e, ed} of editors) {
+		for (const { e, ed } of editors) {
 			ed.value = new Editor(e.value, {
-				toolbar: 'formatting-styles formatting-tags | italic strong | edit-link remove-link',
+				toolbar: 'formatting-styles formatting-tags | italic strong | edit-link remove-link | source',
 			});
 
-			const inlineBasics = new InlineBasicsPlugin();
-
-			const formattingPlugin = new FormattingPlugin({
-				formats,
-			});
 			ed.value.use(new LinksPlugin())
-			ed.value.use(inlineBasics);
-			ed.value.use(formattingPlugin)
+			ed.value.use(new SourcePlugin());
+			ed.value.use(new InlineBasicsPlugin());
+			ed.value.use(new FormattingPlugin({
+				formats,
+			}))
 			ed.value.init();
 
 		}
@@ -82,8 +81,8 @@
 <template>
 	<div ref="el" class="el editor">
 		<h1>This is a H1</h1>
-<!--		<h2>This is a H2</h2>-->
-<!--		<h3>This is a H3</h3>-->
+		<!--		<h2>This is a H2</h2>-->
+		<!--		<h3>This is a H3</h3>-->
 		<p class="double-1 double-2"><strong>This</strong> is a p <strong>with</strong> 2 classes</p>
 		<p class="text-eyebrow">this is an eyebrow</p>
 		<h3 class="text-hero-1">This is a <a href="#foo">hero</a> 1</h3>

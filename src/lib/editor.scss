@@ -19,34 +19,50 @@
             opacity: .2;
         }
 
-        button {
-            font-size: 15px;
-            border: none;
-            background: transparent;
-            padding: 8px;
-            color: black;
-            white-space: nowrap;
-            width: 100%;
-            text-align: left;
-            border-radius: 4px;
-            cursor: pointer;
-
-            &.--active {
-                background: hotpink;
-                color: white;
-            }
-
-            &:not(.--active):hover {
-                background: #ffedca;
-            }
-        }
-
         .toolbar-btn-holder {
             position: relative;
             z-index: 10;
 
-            &:hover > .children {
+            .simple {
                 display: flex;
+                gap: 5px; // spacing betweeen icon & text
+                white-space: nowrap;
+                width: 100%;
+                border-radius: 4px;
+                cursor: pointer;
+                border: none;
+                background: transparent;
+                align-items: center;
+                height: 32px;
+
+                .text {
+                    font-size: 15px;
+                    color: black;
+                }
+
+                .icon {
+
+                }
+
+                &.--active {
+                    background: hotpink;
+                    color: white;
+                }
+
+                &:not(.--active):hover {
+                    background: #ffedca;
+                }
+            }
+
+            button {
+                &.--active {
+                    background: hotpink;
+                    color: white;
+                }
+
+                &:not(.--active):hover {
+                    background: #ffedca;
+                }
             }
 
             .children {
@@ -124,12 +140,19 @@
         box-sizing: border-box;
     }
 
+    &.--width-sm .inner {
+        max-width: min(80vw, 420px);
+    }
+
+    &.--width-md .inner {
+        max-width: min(80vw, 700px);
+    }
+
     .inner {
         background: #FFF;
         border-radius: 4px;
         color: #222;
         width: 100%;
-        max-width: min(80vw, 420px);
         max-height: 80vh;
         overflow: auto;
         box-shadow: 0 1px 4px rgb(0 0 0 / 30%), 0 10px 30px rgb(0 0 0 / 30%);

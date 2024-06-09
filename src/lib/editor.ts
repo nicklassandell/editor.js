@@ -11,8 +11,11 @@ import {
 import { toolbarDividerFn } from "./render-fns/toolbar.ts";
 
 export class Editor {
-    activeBlockEl = null
-    activeInlineEl = null
+    id: string | null = null;
+    el: HTMLElement | null = null;
+    contentEl: HTMLElement | null = null;
+    activeBlockEl: HTMLElement | null = null
+    activeInlineEl: HTMLElement | null = null
     plugins: Record<string, EditorPlugin> = {}
     actionHandlers = {}
     toolbarItems: Record<string, ToolbarItem> = {}
@@ -53,7 +56,6 @@ export class Editor {
             const processedText = pastedText;
 
             document.execCommand('insertText', false, processedText);
-            ;
         })
 
         // disable native formatting keyboard shortcuts, will add our own
@@ -194,9 +196,16 @@ export class Editor {
         this.activeBlockEl = blockEl;
         this.dispatchEvent('activeBlockElChange', this.activeBlockEl);
     }
+
     setActiveInlineEl(inlineEl) {
         this.activeInlineEl = inlineEl;
         this.dispatchEvent('activeInlineElChange', this.activeInlineEl);
+    }
+
+    setHtml(html) {
+        this.contentEl.innerHTML = html;
+        this.setActiveBlockEl(null);
+        this.setActiveInlineEl(null);
     }
 
     buildToolbar() {

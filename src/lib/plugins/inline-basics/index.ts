@@ -18,7 +18,7 @@ export class InlineBasicsPlugin implements EditorPlugin {
         this.editor = editor;
 
         this.buttons.italicButton = createSimpleToolbarButton({
-            content: 'Italic',
+            icon: 'italic',
             onClick: () => this.applyInlineTag(editor, 'i'),
         });
         editor.registerToolbarItem(<ToolbarItem>{
@@ -28,7 +28,7 @@ export class InlineBasicsPlugin implements EditorPlugin {
 
 
         this.buttons.boldButton = createSimpleToolbarButton({
-            content: 'Bold',
+            icon: 'bold',
             onClick: () => this.applyInlineTag(editor, 'strong'),
         });
         editor.registerToolbarItem(<ToolbarItem>{

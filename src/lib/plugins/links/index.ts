@@ -1,4 +1,4 @@
-import { closest, isLinkEl, unwrapEl, wrapRange } from '../../utils/el';
+import { closest, wrapRange } from '../../utils/el';
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
 import { createSimpleToolbarButton } from "../../render-fns/toolbar.ts";
 import { Modal } from '../../utils/modal.js';
@@ -16,7 +16,7 @@ export class LinksPlugin implements EditorPlugin {
         this.editor = editor;
 
         this.editLinkButton = createSimpleToolbarButton({
-            content: 'Link',
+            icon: 'link',
             onClick: (e) => this.handleEditClick(e),
         });
         editor.registerToolbarItem(<ToolbarItem>{
@@ -25,7 +25,7 @@ export class LinksPlugin implements EditorPlugin {
         });
 
         this.removeLinkButton = createSimpleToolbarButton({
-            content: 'Remove Link',
+            icon: 'remove-link',
             onClick: (e) => this.handleRemoveClick(e),
             show: false,
         });

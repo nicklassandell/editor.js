@@ -29,6 +29,7 @@ export type ToolbarItem = {
 }
 
 export type SimpleToolbarButtonArguments = {
+    icon?: string
     content?: string
     contentFn?: Function
     children?: ToolbarItem[]
