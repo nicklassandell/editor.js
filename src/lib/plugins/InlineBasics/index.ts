@@ -6,7 +6,7 @@ import {
     wrapRange
 } from '../../utils/el';
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
-import SimpleToolbarButton from "../../class/SimpleToolbarButton";
+import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton";
 import italicIcon from '@/assets/icons/italic.svg';
 import boldIcon from '@/assets/icons/bold.svg';
 

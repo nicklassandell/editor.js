@@ -1,7 +1,7 @@
 import { closest, wrapRange } from '../../utils/el';
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
 import { Modal } from '../../utils/modal.js';
-import SimpleToolbarButton from "../../class/SimpleToolbarButton";
+import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton";
 
 import linkIcon from '@/assets/icons/link.svg';
 import removeLinkIcon from '@/assets/icons/remove-link.svg';

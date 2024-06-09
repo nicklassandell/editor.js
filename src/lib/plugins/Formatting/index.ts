@@ -1,7 +1,7 @@
 import { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '../../types.js';
 import { changeNodeName, elHasClasses, tagsMatch } from "../../utils/el.ts";
-import SimpleToolbarButton from "../../class/SimpleToolbarButton.js";
-import DropdownToolbarButton from "../../class/DropdownToolbarButton.js";
+import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton.js";
+import DropdownToolbarButton from "../../toolbar/DropdownToolbarButton.js";
 
 export default class FormattingPlugin implements EditorPlugin {
     id = 'formatting'

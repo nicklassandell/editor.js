@@ -1,6 +1,6 @@
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
 import { Modal } from '../../utils/modal.js';
-import SimpleToolbarButton from '../../class/SimpleToolbarButton.js';
+import SimpleToolbarButton from '../../toolbar/SimpleToolbarButton.js';
 import sourceCodeIcon from '@/assets/icons/sourcecode.svg';
 
 export default class SourcePlugin implements EditorPlugin {
