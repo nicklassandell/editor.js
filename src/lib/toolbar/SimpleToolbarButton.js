@@ -52,6 +52,14 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 	addClickListener(fn) {
 		if (typeof fn === 'function') {
 			this.buttonEl.addEventListener('click', fn);
+
+			// for css anims
+			this.buttonEl.addEventListener('mousedown', () => {
+				this.buttonEl.classList.add('--pressed');
+				setTimeout(() => {
+					this.buttonEl.classList.remove('--pressed');
+				}, 200)
+			})
 		}
 	}
 
