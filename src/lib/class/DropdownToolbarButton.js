@@ -11,6 +11,11 @@ function closeAllOtherDropdowns(thisInstance) {
 	})
 }
 
+// share click listener between all instances (for hiding on click outside)
+document.addEventListener('click', () => {
+	instances.forEach((instance) => instance.hideDropdown());
+});
+
 export default class DropdownToolbarButton extends SimpleToolbarButton {
 
 	childContainerEl = null;
@@ -31,9 +36,6 @@ export default class DropdownToolbarButton extends SimpleToolbarButton {
 			closeAllOtherDropdowns(this);
 			this.toggleDropdown();
 		})
-		document.addEventListener('click', () => {
-			this.hideDropdown();
-		});
 	}
 
 	toggleDropdown() {
