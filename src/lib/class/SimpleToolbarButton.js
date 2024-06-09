@@ -28,6 +28,10 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 		if (config.onClick) {
 			this.addClickListener(config.onClick);
 		}
+
+		if (typeof config.show == 'boolean') {
+			this.setVisibility(config.show);
+		}
 	}
 
 	createButtonEl() {

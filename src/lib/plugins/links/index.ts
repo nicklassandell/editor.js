@@ -1,7 +1,10 @@
 import { closest, wrapRange } from '../../utils/el';
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
-import { createSimpleToolbarButton } from "../../render-fns/toolbar.ts";
 import { Modal } from '../../utils/modal.js';
+import SimpleToolbarButton from "../../class/SimpleToolbarButton";
+
+import linkIcon from '@/assets/icons/link.svg';
+import removeLinkIcon from '@/assets/icons/remove-link.svg';
 
 export class LinksPlugin implements EditorPlugin {
     id = 'links'
@@ -15,23 +18,23 @@ export class LinksPlugin implements EditorPlugin {
 
         this.editor = editor;
 
-        this.editLinkButton = createSimpleToolbarButton({
-            icon: 'link',
+        this.editLinkButton = new SimpleToolbarButton({
+            icon: linkIcon,
             onClick: (e) => this.handleEditClick(e),
         });
         editor.registerToolbarItem(<ToolbarItem>{
             id: 'edit-link',
-            elements: [this.editLinkButton.getRootElement()],
+            elements: [this.editLinkButton.rootEl],
         });
 
-        this.removeLinkButton = createSimpleToolbarButton({
-            icon: 'remove-link',
+        this.removeLinkButton = new SimpleToolbarButton({
+            icon: removeLinkIcon,
             onClick: (e) => this.handleRemoveClick(e),
             show: false,
         });
         editor.registerToolbarItem(<ToolbarItem>{
             id: 'remove-link',
-            elements: [this.removeLinkButton.getRootElement()],
+            elements: [this.removeLinkButton.rootEl],
         });
 
         // button active states
