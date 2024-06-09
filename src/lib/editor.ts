@@ -32,7 +32,7 @@ export default class Editor {
 
     init() {
         this.el.classList.add(this.id);
-        this.el.innerHTML = `<div class="content" contenteditable="true">${this.el.innerHTML}</div>`;
+        this.el.innerHTML = `<div class="content" contenteditable="true">${this.el.innerHTML || '<p>&#x200b;</p>'}</div>`;
         this.contentEl = this.el.querySelector('.content');
 
         this.contentEl.addEventListener('keyup', this.update.bind(this));
