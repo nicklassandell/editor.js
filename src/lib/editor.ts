@@ -13,7 +13,6 @@ export default class Editor {
     activeBlockEl: HTMLElement | null = null
     activeInlineEl: HTMLElement | null = null
     plugins: Record<string, EditorPlugin> = {}
-    actionHandlers = {}
     toolbarItems: Record<string, ToolbarItem> = {}
     eventHandlers: Record<string, Function[]> = {}
 
@@ -171,10 +170,6 @@ export default class Editor {
     destroy() {
         // todo: write
         this.toolbarEl.outerHTML = '';
-    }
-
-    registerActionHandler(handlerId, handler) {
-        this.actionHandlers[handlerId] = handler;
     }
 
     registerToolbarItem(item: ToolbarItem) {
