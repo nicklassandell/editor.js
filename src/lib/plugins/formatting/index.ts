@@ -1,6 +1,7 @@
 import { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '../../types.js';
-import { createSimpleToolbarButton } from "../../render-fns/toolbar.ts";
-import { changeNodeName, classesMatch, elHasClasses, tagsMatch } from "../../utils/el.ts";
+import { changeNodeName, elHasClasses, tagsMatch } from "../../utils/el.ts";
+import SimpleToolbarButton from "../../class/SimpleToolbarButton.js";
+import DropdownToolbarButton from "../../class/DropdownToolbarButton.js";
 
 export class FormattingPlugin implements EditorPlugin {
     id = 'formatting'
@@ -38,8 +39,8 @@ export class FormattingPlugin implements EditorPlugin {
         editor.registerToolbarItem(<ToolbarItem>{
             id: 'formatting-styles',
             elements: [
-                this.formatsButton.getRootElement(),
-                this.tagsButton.getRootElement(),
+                this.formatsButton.rootEl,
+                this.tagsButton.rootEl,
             ],
         });
     }
@@ -47,27 +48,25 @@ export class FormattingPlugin implements EditorPlugin {
     createToolbarButtons() {
         // create format children buttons
         this.formats.forEach((format) => {
-            this.formatButtons[format.id] = createSimpleToolbarButton({
-                content: format.name,
+            this.formatButtons[format.id] = new SimpleToolbarButton({
+                text: format.name,
                 onClick: () => this.formatBlock(format)
             });
         })
 
         // create formats button (root)
-        this.formatsButton = createSimpleToolbarButton({
-            contentFn: () => {
-                return this.activeToolbarButtonId
-                    ? this.formats.find((format) => format.id === this.activeToolbarButtonId).name
-                    : 'Formats';
-            },
+        this.formatsButton = new DropdownToolbarButton({
+            text: 'Formats',
         });
 
+        console.log(this.formatsButton)
+
         // attach format children to root node
-        this.formatsButton.renderChildren(Object.values(this.formatButtons).map((button) => button.getRootElement()))
+        this.formatsButton.renderChildren(Object.values(this.formatButtons).map((button) => button.rootEl))
 
         // tags button (root node)
-        this.tagsButton = createSimpleToolbarButton(<SimpleToolbarButtonArguments>{
-            content: 'Tags',
+        this.tagsButton = new DropdownToolbarButton(<SimpleToolbarButtonArguments>{
+            text: 'Tags',
         });
         this.tagsButton.hide();
     }
@@ -80,24 +79,23 @@ export class FormattingPlugin implements EditorPlugin {
         })
 
         // update formats root button text
-        this.formatsButton.getButtonElement().innerHTML = (this.activeBlockFormat?.name || 'Formats') + ' <span style="font-size: 10px">▼</span>';
+        this.formatsButton.setText(this.activeBlockFormat?.name || 'Formats');
 
         // update tags
         this.tagButtons = {};
-        this.tagsButton.destroyChildren();
         this.tagsButton.hide();
         if (this.activeBlockFormat && this.activeBlockFormat.allowedTags?.length) {
             this.activeBlockFormat.allowedTags.forEach((tag: string) => {
-                this.tagButtons['tag-' + tag] = createSimpleToolbarButton({
-                    content: tag.toUpperCase(),
+                this.tagButtons['tag-' + tag] = new SimpleToolbarButton({
+                    text: tag.toUpperCase(),
                     onClick: () => this.formatBlock({ tag })
                 })
                 if (tag.toLowerCase() === activeBlockEl.nodeName.toLowerCase()) {
                     this.tagButtons['tag-' + tag].setActive(true);
                 }
             })
-            this.tagsButton.renderChildren(Object.values(this.tagButtons).map((btn) => btn.getRootElement()));
-            this.tagsButton.getButtonElement().innerHTML = activeBlockEl.nodeName.toUpperCase() + ' <span style="font-size: 10px">▼</span>';
+            this.tagsButton.renderChildren(Object.values(this.tagButtons).map((btn) => btn.rootEl));
+            this.tagsButton.setText(activeBlockEl.nodeName.toUpperCase());
             this.tagsButton.show();
         }
         return [];

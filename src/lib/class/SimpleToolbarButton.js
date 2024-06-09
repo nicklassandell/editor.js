@@ -15,6 +15,7 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 	constructor(config) {
 		super();
 
+		this.rootEl.classList.add('simple');
 		this.createButtonEl();
 
 		if (config.icon) {
@@ -36,7 +37,6 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 
 	createButtonEl() {
 		this.buttonEl = document.createElement('button');
-		this.buttonEl.classList.add('simple');
 		this.rootEl.insertAdjacentElement('beforeend', this.buttonEl);
 
 	}
@@ -59,7 +59,13 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 		if (!this.textEl) {
 			const textEl = document.createElement('span');
 			textEl.classList.add('text');
-			this.buttonEl.insertAdjacentElement('beforeend', textEl);
+			// make sure textEl is placed after icon, or at in the beginning of the button
+			// (not at the end, there may be other stuff there, like an arrow in the DropdownToolbarButton)
+			if (this.iconEl) {
+				this.iconEl.insertAdjacentElement('afterend', textEl);
+			} else {
+				this.buttonEl.insertAdjacentElement('afterbegin', textEl);
+			}
 		}
 		this.textEl.innerText = text;
 	}
