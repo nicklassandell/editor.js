@@ -12,6 +12,7 @@ export default class SourcePlugin implements EditorPlugin {
         this.editor = editor;
         this.sourceButton = new SimpleToolbarButton({
             icon: sourceCodeIcon,
+            tooltip: 'Edit Source',
             onClick: () => this.handleClick(),
         });
         editor.registerToolbarItem(<ToolbarItem>{

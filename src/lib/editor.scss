@@ -25,6 +25,7 @@
 
             &.simple {
                 button {
+                    position: relative;
                     display: flex;
                     gap: 5px; // spacing betweeen icon & text
                     white-space: nowrap;
@@ -35,6 +36,35 @@
                     background: transparent;
                     align-items: center;
                     height: 32px;
+
+                    &[data-tooltip] {
+                        &:hover::after {
+                            display: block;
+                        }
+
+                        &::after {
+                            content: attr(data-tooltip);
+                            position: absolute;
+                            top: 100%;
+                            left: 50%;
+                            transform: translateX(-50%);
+                            padding: 6px;
+                            font-size: .8rem;
+                            color: #FFF;
+                            background: rgb(30 30 30 / .9);
+                            border-radius: 3px;
+                            animation: tooltipIn .2s .8s both;
+                            display: none;
+
+                            @keyframes tooltipIn {
+                                from {
+                                    opacity: 0;
+                                    transform: translateX(-50%) translateY(2px);
+                                }
+                            }
+                        }
+                    }
+
 
                     .text {
                         font-size: .9rem;
@@ -60,11 +90,18 @@
                 > button {
                     background: #eeeeee;
                 }
+
                 &.--is-open {
                     & > .children {
                         display: block;
                     }
+
+                    // force hide tooltip when dropdown is shown
+                    > button[data-tooltip]::after {
+                        display: none;
+                    }
                 }
+
                 .children {
                     position: absolute;
                     top: 100%;
@@ -75,7 +112,7 @@
                     background: #FFF;
                     padding: 4px;
                     border-radius: 4px;
-                    box-shadow: 0 0 5px rgba(0,0,0,.1);
+                    box-shadow: 0 0 5px rgba(0, 0, 0, .1);
                 }
             }
         }

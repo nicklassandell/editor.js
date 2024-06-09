@@ -20,6 +20,7 @@ export default class LinksPlugin implements EditorPlugin {
 
         this.editLinkButton = new SimpleToolbarButton({
             icon: linkIcon,
+            tooltip: 'Add/edit link',
             onClick: (e) => this.handleEditClick(e),
         });
         editor.registerToolbarItem(<ToolbarItem>{
@@ -29,6 +30,7 @@ export default class LinksPlugin implements EditorPlugin {
 
         this.removeLinkButton = new SimpleToolbarButton({
             icon: removeLinkIcon,
+            tooltip: 'Remove link',
             onClick: (e) => this.handleRemoveClick(e),
             show: false,
         });

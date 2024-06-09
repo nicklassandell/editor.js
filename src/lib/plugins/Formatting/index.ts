@@ -20,7 +20,6 @@ export default class FormattingPlugin implements EditorPlugin {
     constructor(options = {}) {
         this.resolveOptions(options);
         this.computeAvailableFormatClasses();
-        console.log('formats:', this.formats)
     }
 
     attach(editor: Editor) {
@@ -57,6 +56,7 @@ export default class FormattingPlugin implements EditorPlugin {
         // create formats button (root)
         this.formatsButton = new DropdownToolbarButton({
             text: 'Formats',
+            tooltip: 'Select format',
         });
 
         // attach format children to root node
@@ -65,6 +65,7 @@ export default class FormattingPlugin implements EditorPlugin {
         // tags button (root node)
         this.tagsButton = new DropdownToolbarButton(<SimpleToolbarButtonArguments>{
             text: 'Tags',
+            tooltip: 'Select SEO tag'
         });
         this.tagsButton.hide();
     }

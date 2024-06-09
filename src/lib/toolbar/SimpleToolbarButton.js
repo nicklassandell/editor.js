@@ -26,6 +26,10 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 			this.setText(config.text);
 		}
 
+		if (config.tooltip) {
+			this.setTooltipText(config.tooltip);
+		}
+
 		if (config.onClick) {
 			this.addClickListener(config.onClick);
 		}
@@ -45,6 +49,10 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 		if (typeof fn === 'function') {
 			this.buttonEl.addEventListener('click', fn);
 		}
+	}
+
+	setTooltipText(text) {
+		this.buttonEl.dataset.tooltip = text;
 	}
 
 	setText(text) {
