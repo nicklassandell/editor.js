@@ -188,6 +188,13 @@
     justify-content: center;
     align-items: center;
     z-index: 20;
+    animation: modalOuterIn .3s both;
+
+    @keyframes modalOuterIn {
+        from {
+            opacity: 0;
+        }
+    }
 
     * {
         box-sizing: border-box;
@@ -209,6 +216,14 @@
         max-height: 80vh;
         overflow: auto;
         box-shadow: 0 1px 4px rgb(0 0 0 / 30%), 0 10px 30px rgb(0 0 0 / 30%);
+        animation: modalIn .3s both;
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(.9);
+            }
+        }
 
         .header {
             padding: 24px;
