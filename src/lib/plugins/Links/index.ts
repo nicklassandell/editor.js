@@ -1,10 +1,11 @@
 import { closest, wrapRange } from '../../utils/el';
-import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
+import {  EditorPlugin, ToolbarItem } from "../../types.ts";
 import { Modal } from '../../utils/modal.js';
 import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton";
 
 import linkIcon from '@/assets/icons/link.svg';
 import removeLinkIcon from '@/assets/icons/remove-link.svg';
+import Editor from "@/lib/editor.ts";
 
 export default class LinksPlugin implements EditorPlugin {
     id = 'links'
@@ -21,7 +22,7 @@ export default class LinksPlugin implements EditorPlugin {
         this.editLinkButton = new SimpleToolbarButton({
             icon: linkIcon,
             tooltip: 'Add/edit link',
-            onClick: (e) => this.handleEditClick(e),
+            onClick: () => this.handleEditClick(),
         });
         editor.registerToolbarItem(<ToolbarItem>{
             id: 'edit-link',
@@ -31,7 +32,7 @@ export default class LinksPlugin implements EditorPlugin {
         this.removeLinkButton = new SimpleToolbarButton({
             icon: removeLinkIcon,
             tooltip: 'Remove link',
-            onClick: (e) => this.handleRemoveClick(e),
+            onClick: () => this.handleRemoveClick(),
             show: false,
         });
         editor.registerToolbarItem(<ToolbarItem>{
@@ -54,7 +55,7 @@ export default class LinksPlugin implements EditorPlugin {
         this.editor.setActiveInlineEl(null);
     }
 
-    handleEditClick(e) {
+    handleEditClick() {
         const selection = window.getSelection() as Selection;
         if (!selection.anchorNode) return;
 

@@ -4,28 +4,16 @@ export interface EditorPlugin {
 }
 
 export type EditorConfig = {
-    blockTags: string[]
-    inlineTags: string[]
-    validAttributes: string[]
-    toolbarLayout: string
-}
-
-export type Editor = {
-    registerActionHandler: Function
-    registerToolbarItem: Function
+    blockTags?: string[]
+    inlineTags?: string[]
+    validAttributes?: string[]
+    toolbar?: string
+    toolbarLayout?: string
 }
 
 export type ToolbarItem = {
     id: string
-    content?: string
-    contentFn?: Function
-    apply?: string
-    applyWith?: string
-    action?: string
-    renderFn?: Function
-    children?: ToolbarItem[]
-    childrenFn?: Function
-    activeCheckFn?: Function
+    elements: (HTMLElement | (() => HTMLElement))[]
 }
 
 export type SimpleToolbarButtonArguments = {

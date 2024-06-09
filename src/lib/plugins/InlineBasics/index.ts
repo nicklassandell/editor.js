@@ -5,14 +5,18 @@ import {
     unwrapEl,
     wrapRange
 } from '../../utils/el';
-import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
-import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton";
+import type { EditorPlugin, ToolbarItem } from "../../types.ts";
+import SimpleToolbarButton from "@/lib/toolbar/SimpleToolbarButton";
 import italicIcon from '@/assets/icons/italic.svg';
 import boldIcon from '@/assets/icons/bold.svg';
+import Editor from "@/lib/editor.ts";
 
 export default class InlineBasicsPlugin implements EditorPlugin {
     id = 'inline-basics'
-    buttons = {}
+    buttons = {
+        italicButton: null,
+        boldButton: null,
+    }
     editor = null
 
     attach(editor: Editor) {

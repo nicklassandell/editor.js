@@ -1,7 +1,8 @@
-import { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '../../types.js';
-import { changeNodeName, elHasClasses, tagsMatch } from "../../utils/el.ts";
-import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton.js";
-import DropdownToolbarButton from "../../toolbar/DropdownToolbarButton.js";
+import type { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '@/lib/types.js';
+import { changeNodeName, elHasClasses, tagsMatch } from "@/lib/utils/el.ts";
+import SimpleToolbarButton from "@/lib/toolbar/SimpleToolbarButton.js";
+import DropdownToolbarButton from "@/lib/toolbar/DropdownToolbarButton.js";
+import Editor from "@/lib/editor.ts";
 
 export default class FormattingPlugin implements EditorPlugin {
     id = 'formatting'
@@ -129,7 +130,6 @@ export default class FormattingPlugin implements EditorPlugin {
             format.id = (classArr.length ? classArr.join('_') : format.tag) + '-' + (Math.round(Math.random() * 100000));
             format.weight = classArr.length;
             format.classes = classArr;
-            format.activeCheckFn = () => this.activeToolbarButtonId === format.id
             return format;
         })
 
@@ -146,7 +146,7 @@ export default class FormattingPlugin implements EditorPlugin {
         }, new Set())];
     }
 
-    formatBlock({ tag, defaultTag, classes }) {
+    formatBlock({ tag = undefined, defaultTag = undefined, classes = undefined }) {
         const { activeBlockEl } = this.editor;
 
         const applyTag = tag || defaultTag || 'p';

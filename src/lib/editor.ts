@@ -9,6 +9,7 @@ import {
 export default class Editor {
     id: string | null = null;
     el: HTMLElement | null = null;
+    toolbarEl: HTMLElement | null = null;
     contentEl: HTMLElement | null = null;
     activeBlockEl: HTMLElement | null = null
     activeInlineEl: HTMLElement | null = null
@@ -50,6 +51,7 @@ export default class Editor {
             const pastedText = clipboardData.getData('text/plain');
             const processedText = pastedText;
 
+            // this is the only time we call execCommand in the lib, not really nice
             document.execCommand('insertText', false, processedText);
         })
 
@@ -92,7 +94,7 @@ export default class Editor {
 
                 // if inline el
                 if (!isBlockEl) {
-                    // idk why i need to do node.outerHTML instead of incertAdjacentElement with node. It seems to skip some nodes if we do that.
+                    // insertAdjacentElement with node would be nicer, but it seems to skip some nodes if we do that.
                     newNode.insertAdjacentHTML('beforeend', node.outerHTML);
                     didCorrect = true;
                     continue;
@@ -109,6 +111,7 @@ export default class Editor {
             }
         }
 
+        // todo: can we kick this?
         if (didCorrect) {
             if (newNode.innerHTML) {
                 els.push(newNode);
@@ -116,11 +119,9 @@ export default class Editor {
             this.contentEl.innerHTML = '';
             for (const el of els) {
                 this.contentEl.insertAdjacentElement('beforeend', el);
-                console.log(el);
             }
             const lastBlock = this.contentEl.children[this.contentEl.children.length - 1];
             const lastNode = lastBlock.childNodes[lastBlock.childNodes.length - 1];
-            console.log(lastNode, lastNode.length)
             window.getSelection().setPosition(lastNode, lastNode.length)
         }
     }

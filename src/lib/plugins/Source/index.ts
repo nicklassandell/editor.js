@@ -1,12 +1,13 @@
-import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
+import { EditorPlugin, ToolbarItem } from "../../types.ts";
 import { Modal } from '../../utils/modal.js';
 import SimpleToolbarButton from '../../toolbar/SimpleToolbarButton.js';
 import sourceCodeIcon from '@/assets/icons/sourcecode.svg';
+import Editor from "@/lib/editor.ts";
 
 export default class SourcePlugin implements EditorPlugin {
     id = 'source'
     sourceButton = null
-    editor = null
+    editor: Editor | null = null
 
     attach(editor: Editor) {
         this.editor = editor;
