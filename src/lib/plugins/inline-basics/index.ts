@@ -6,7 +6,9 @@ import {
     wrapRange
 } from '../../utils/el';
 import { Editor, EditorPlugin, ToolbarItem } from "../../types.ts";
-import { createSimpleToolbarButton } from "../../render-fns/toolbar.ts";
+import SimpleToolbarButton from "../../class/SimpleToolbarButton";
+import italicIcon from '@/assets/icons/italic.svg';
+import boldIcon from '@/assets/icons/bold.svg';
 
 export class InlineBasicsPlugin implements EditorPlugin {
     id = 'inline-basics'
@@ -17,23 +19,23 @@ export class InlineBasicsPlugin implements EditorPlugin {
 
         this.editor = editor;
 
-        this.buttons.italicButton = createSimpleToolbarButton({
-            icon: 'italic',
+        this.buttons.italicButton = new SimpleToolbarButton({
+            icon: italicIcon,
             onClick: () => this.applyInlineTag(editor, 'i'),
         });
         editor.registerToolbarItem(<ToolbarItem>{
             id: 'italic',
-            elements: [this.buttons.italicButton.getRootElement()],
+            elements: [this.buttons.italicButton.rootEl],
         });
 
 
-        this.buttons.boldButton = createSimpleToolbarButton({
-            icon: 'bold',
+        this.buttons.boldButton = new SimpleToolbarButton({
+            icon: boldIcon,
             onClick: () => this.applyInlineTag(editor, 'strong'),
         });
         editor.registerToolbarItem(<ToolbarItem>{
             id: 'strong',
-            elements: [this.buttons.boldButton.getRootElement()],
+            elements: [this.buttons.boldButton.rootEl],
         });
 
         // button active states
