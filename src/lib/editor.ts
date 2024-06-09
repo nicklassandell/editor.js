@@ -208,10 +208,10 @@ export default class Editor {
         const html = `<div class="toolbar"></div>`;
         this.el.insertAdjacentHTML('afterbegin', html);
         this.toolbarEl = document.querySelector(`.${this.id} .toolbar`);
-        this.updateToolbar();
+        this.renderToolbarItems();
     }
 
-    updateToolbar() {
+    renderToolbarItems() {
         const layout = this.config.toolbarLayout.split(/\s+/g);
 
         const nodes = [];
