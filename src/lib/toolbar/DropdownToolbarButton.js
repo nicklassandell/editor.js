@@ -19,7 +19,6 @@ document.addEventListener('click', () => {
 export default class DropdownToolbarButton extends SimpleToolbarButton {
 
 	childContainerEl = null;
-	arrowEl = null;
 
 	constructor(config) {
 		super(config);
@@ -51,10 +50,14 @@ export default class DropdownToolbarButton extends SimpleToolbarButton {
 	}
 
 	createArrowEl() {
-		this.arrowEl = document.createElement('img');
-		this.arrowEl.src = chevronDownIcon;
-		this.arrowEl.classList.add('arrow');
-		this.buttonEl.insertAdjacentElement('beforeend', this.arrowEl);
+		const arrowEl = document.createElement('div');
+		arrowEl.classList.add('arrow');
+
+		const img = document.createElement('img');
+		img.src = chevronDownIcon;
+
+		arrowEl.insertAdjacentElement('beforeend', img);
+		this.buttonEl.insertAdjacentElement('beforeend', arrowEl);
 	}
 
 	createChildContainer() {

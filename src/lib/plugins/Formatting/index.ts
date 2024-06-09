@@ -57,6 +57,7 @@ export default class FormattingPlugin implements EditorPlugin {
         this.formatsButton = new DropdownToolbarButton({
             text: 'Formats',
             tooltip: 'Select format',
+            buttonMinWidth: 120,
         });
 
         // attach format children to root node

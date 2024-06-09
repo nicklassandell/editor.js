@@ -30,6 +30,10 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 			this.setTooltipText(config.tooltip);
 		}
 
+		if (config.hasOwnProperty('buttonMinWidth')) {
+			this.setButtonMinWidth(config.buttonMinWidth);
+		}
+
 		if (config.onClick) {
 			this.addClickListener(config.onClick);
 		}
@@ -53,6 +57,17 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 
 	setTooltipText(text) {
 		this.buttonEl.dataset.tooltip = text;
+	}
+
+	setButtonMinWidth(minWidth) {
+		if (!minWidth) {
+			this.buttonEl.style.minWidth = null;
+		} else {
+			if (typeof minWidth === 'number') {
+				minWidth = `${minWidth}px`;
+			}
+			this.buttonEl.style.minWidth = minWidth;
+		}
 	}
 
 	setText(text) {

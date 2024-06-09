@@ -89,6 +89,15 @@
             &.dropdown {
                 > button {
                     background: #eeeeee;
+                    padding-left: 8px;
+                    padding-right: 8px;
+
+                    .arrow {
+                        flex: 1 1 auto;
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-left: 6px;
+                    }
                 }
 
                 &.--is-open {
