@@ -1,0 +1,63 @@
+
+.plume-btn {
+    padding: 10px 22px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition-duration: .5s;
+
+    &:hover {
+        transition-duration: .1s;
+    }
+
+    &:active {
+        transition-duration: none;
+    }
+}
+
+.plume-btn.--primary {
+    background: #b18a4e;
+    color: #FFF;
+
+    &:hover {
+        background: #c79851;
+        color: #fffbf2;
+    }
+
+    &:active {
+        background: #8d6c33;
+        transform: scale(.95);
+    }
+}
+
+.plume-btn.--secondary {
+    background: #e7e7e7;
+    color: #333;
+
+    &:hover {
+        background: #e0e0e0;
+        color: #000;
+    }
+
+    &:active {
+        background: #c9c9c9;
+        transform: scale(.95);
+    }
+}
+
+
+.plume-input {
+    padding: 12px;
+    font-size: .95rem;
+    background: #e7e7e7;
+    color: #333;
+    border: none;
+    border-radius: 6px;
+    width: 100%;
+
+    &:focus {
+        background: #e0e0e0;
+        outline: none;
+    }
+}

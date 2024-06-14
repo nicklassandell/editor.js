@@ -78,7 +78,7 @@ export default class LinksPlugin implements EditorPlugin {
         modal.setTitle('Edit Link');
         modal.setContentHTML(`
             <p style="margin: 0 0 4px; font-size: .9rem;">Link URL</p>
-            <input class="editor-modal-input" placeholder="Enter link url..." value="${currHref}">
+            <input class="plume-input" placeholder="Enter link url..." value="${currHref}">
         `);
         modal.setFooterActions([
             {
@@ -101,7 +101,7 @@ export default class LinksPlugin implements EditorPlugin {
                 btnStyle: 'primary',
                 text: 'Save',
                 onClick() {
-                    const newHref = modal.contentEl.querySelector('.editor-modal-input').value;
+                    const newHref = modal.contentEl.querySelector('.plume-input').value;
                     linkEl.setAttribute('href', newHref);
                     modal.destroy();
                 }

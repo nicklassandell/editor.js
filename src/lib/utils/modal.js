@@ -25,7 +25,7 @@ export class Modal {
 
 	create() {
 		const html = `
-			<div id="${this.id}" class="editor-modal outer --width-${this.config.width}">
+			<div id="${this.id}" class="plume-modal outer --width-${this.config.width}">
 				<div class="inner">
 					<div class="header"><p class="title"></p></div>
 					<div>
@@ -44,7 +44,7 @@ export class Modal {
 		this.el.querySelector('form').addEventListener('submit', (e) => {
 			e.preventDefault();
 			// click primary button if it exists
-			const primaryActions = this.footerActionsEl.querySelectorAll('button.editor-btn.--primary');
+			const primaryActions = this.footerActionsEl.querySelectorAll('button.plume-btn.--primary');
 			if (primaryActions.length === 1) {
 				primaryActions[0].click();
 			}
@@ -73,7 +73,7 @@ export class Modal {
 
 	setFooterActions(actions) {
 		for (const action of actions) {
-			const html = `<button class="editor-btn --${action.btnStyle}">${action.text}</button>`;
+			const html = `<button class="plume-btn --${action.btnStyle}">${action.text}</button>`;
 			this.footerActionsEl.insertAdjacentHTML('beforeend', html);
 			const el = this.footerActionsEl.querySelector('button:last-child');
 			el.addEventListener('click', action.onClick);

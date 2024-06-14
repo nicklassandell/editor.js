@@ -27,7 +27,8 @@ export default class Editor {
     constructor(el: HTMLElement, options: EditorConfig = {}) {
         console.log('editor:', this)
         this.el = el;
-        this.id = 'editor-' + Math.round(Math.random() * 100000000);
+        this.el.classList.add('plume');
+        this.id = 'plume-' + Math.round(Math.random() * 100000000);
         this.resolveOptions(options);
     }
 

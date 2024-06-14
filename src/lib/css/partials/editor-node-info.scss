@@ -1,0 +1,29 @@
+.plume {
+
+    .content {
+        p, div, h1, h2, h3, h4 {
+            position: relative;
+
+            &::before {
+                position: absolute;
+                display: block;
+                bottom: 100%;
+                right: 100%;
+                color: darkorange;
+                font-size: .5rem;
+            }
+        }
+
+        h1::before {
+            content: 'H1';
+        }
+
+        h2::before {
+            content: 'H2';
+        }
+
+        h3::before {
+            content: 'H3';
+        }
+    }
+}

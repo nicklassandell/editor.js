@@ -28,7 +28,7 @@ export default class SourcePlugin implements EditorPlugin {
         const modal = new Modal({ width: 'md' });
         modal.setTitle('Edit Source Code');
         modal.setContentHTML(`
-            <textarea class="editor-modal-input" rows="24" placeholder="Enter HTML...">
+            <textarea class="plume-input" rows="24" placeholder="Enter HTML...">
         `);
 
         modal.setFooterActions([

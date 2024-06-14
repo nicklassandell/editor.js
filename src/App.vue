@@ -7,7 +7,7 @@
 	import LinksPlugin from './lib/plugins/Links/index.ts';
 	import SourcePlugin from './lib/plugins/Source/index.ts';
 	import ToolbarDividerPlugin from './lib/plugins/ToolbarDivider/index.ts';
-	import './lib/editor.scss';
+	import './lib/css/index.scss';
 
 	const el = ref();
 	const el2 = ref();
@@ -81,7 +81,7 @@
 </script>
 
 <template>
-	<div ref="el" class="el editor">
+	<div ref="el" class="el">
 		<h1>This is a H1</h1>
 		<!--		<h2>This is a H2</h2>-->
 		<!--		<h3>This is a H3</h3>-->
@@ -89,10 +89,12 @@
 		<p class="text-eyebrow">this is an eyebrow</p>
 		<h3 class="text-hero-1">This is a <a href="#foo">hero</a> 1</h3>
 		<h2 class="text-hero-2">This is a hero 2</h2>
+		<p>You can do anything here - the only pre-requisite is that it makes you happy. Now we'll take the almighty fan brush. How to paint. That's easy. What to paint. That's much harder. It's life. It's interesting. It's fun. Let's go up in here, and start having some fun</p>
+		<p>Isn't it fantastic that you can change your mind and create all these happy things? There are no limits in this world. Isn't that fantastic? You can just push a little tree out of your brush like that.</p>
 		<p>this is yet <i>another</i> paragraph</p>
 	</div>
 	<br><br><br>
-	<div ref="el2" class="el editor"></div>
+	<div ref="el2" class="el"></div>
 </template>
 
 <style>
@@ -110,49 +112,61 @@
 		line-height: 1.2;
 	}
 
-	h1 {
-		font-size: 40px;
-		font-weight: bold;
+	.plume {
+
+		h1, h2, h3, p {
+			line-height: 1.15;
+		}
+
+		p {
+			line-height: 1.4;
+		}
+
+		h1 {
+			font-size: 2.5rem;
+			font-weight: bold;
+		}
+
+		h2 {
+			font-size: 2rem;
+			font-weight: bold;
+		}
+
+		h3 {
+			font-size: 1.625rem;
+			font-weight: bold;
+		}
+
+		.text-hero-1 {
+			border-left: 5px solid red;
+			font-size: 4.375rem;
+			font-weight: bold;
+			padding-left: 10px;
+		}
+
+		.text-hero-2 {
+			border-left: 10px solid red;
+			font-size: 3.125rem;
+			font-weight: bold;
+			padding-left: 10px;
+		}
+
+		.text-eyebrow {
+			text-transform: uppercase;
+			font-family: monospace;
+			letter-spacing: 1px;
+			font-size: 1.125rem;
+		}
+
+		.double-1 {
+			border-left: 4px solid limegreen;
+			padding-left: 10px;
+		}
+
+		.double-2 {
+			border-right: 4px solid limegreen;
+		}
 	}
 
-	h2 {
-		font-size: 32px;
-		font-weight: bold;
-	}
-
-	h3 {
-		font-size: 26px;
-		font-weight: bold;
-	}
-
-	.text-hero-1 {
-		border-left: 5px solid red;
-		font-size: 70px;
-		font-weight: bold;
-		padding-left: 10px;
-	}
-
-	.text-hero-2 {
-		border-left: 10px solid red;
-		font-size: 50px;
-		font-weight: bold;
-		padding-left: 10px;
-	}
-
-	.text-eyebrow {
-		text-transform: uppercase;
-		font-family: monospace;
-		letter-spacing: 1px;
-		font-size: 18px;
-	}
-
-	.double-1 {
-		border-left: 4px solid limegreen;
-		padding-left: 10px;
-	}
-
-	.double-2 {
-		border-right: 4px solid limegreen;
-	}
 
 </style>

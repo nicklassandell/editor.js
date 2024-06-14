@@ -1,0 +1,81 @@
+
+.plume-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(255 255 255 / 50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    animation: modalOuterIn .3s both;
+
+    @keyframes modalOuterIn {
+        from {
+            opacity: 0;
+        }
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    &.--width-sm .inner {
+        max-width: min(80vw, 420px);
+    }
+
+    &.--width-md .inner {
+        max-width: min(80vw, 700px);
+    }
+
+    .inner {
+        background: #FFF;
+        border-radius: 4px;
+        color: #222;
+        width: 100%;
+        max-height: 80vh;
+        overflow: auto;
+        box-shadow: 0 1px 4px rgb(0 0 0 / 30%), 0 10px 30px rgb(0 0 0 / 30%);
+        animation: modalIn .3s both;
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(.9);
+            }
+        }
+
+        .header {
+            padding: 24px;
+            border-bottom: 1px solid #e3e3e3;
+
+            &:empty {
+                display: none;
+            }
+
+            .title {
+                font-size: 18px;
+                font-weight: bold;
+                margin: 0;
+            }
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .footer {
+            padding: 24px;
+            border-top: 1px solid #e3e3e3;
+
+            &:empty {
+                display: none;
+            }
+
+            .actions {
+                display: flex;
+                gap: 12px;
+                justify-content: flex-end;
+            }
+        }
+    }
+}
