@@ -1,5 +1,5 @@
-import { defaultOptions } from './data/defaultOptions.js';
-import { EditorConfig, EditorPlugin, ToolbarItem } from "./types.ts";
+import { defaultOptions } from './data/defaultOptions';
+import { EditorConfig, EditorPlugin, ToolbarItem } from "./types";
 import {
     cleanupInlineStyles,
     closest,
