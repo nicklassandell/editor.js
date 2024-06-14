@@ -1,7 +1,7 @@
 <script setup>
 	import { onMounted, onUnmounted, ref } from 'vue';
 
-	import Editor from './lib/editor.ts';
+	import PlumeEditor from './lib/editor.ts';
 	import InlineBasicsPlugin from './lib/plugins/InlineBasics/index.ts';
 	import FormattingPlugin from './lib/plugins/Formatting/index.ts';
 	import LinksPlugin from './lib/plugins/Links/index.ts';
@@ -59,7 +59,7 @@
 		const editors = [{ e: el, ed: editor }, { e: el2, ed: editor2 }];
 		// const editors = [{ e: el, ed: editor }];
 		for (const { e, ed } of editors) {
-			ed.value = new Editor(e.value, {
+			ed.value = new PlumeEditor(e.value, {
 				toolbar: 'formatting-styles formatting-tags | italic strong | edit-link remove-link | source',
 			});
 

@@ -2,12 +2,12 @@ import type { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '@/
 import { changeNodeName, elHasClasses, tagsMatch } from "@/lib/utils/el.ts";
 import SimpleToolbarButton from "@/lib/toolbar/SimpleToolbarButton.js";
 import DropdownToolbarButton from "@/lib/toolbar/DropdownToolbarButton.js";
-import Editor from "@/lib/editor.ts";
+import PlumeEditor from "@/lib/editor.ts";
 
 export default class FormattingPlugin implements EditorPlugin {
     id = 'formatting'
 
-    editor: Editor | null = null;
+    editor: PlumeEditor | null = null;
 
     formats = []
     availableFormatClasses = []
@@ -23,19 +23,19 @@ export default class FormattingPlugin implements EditorPlugin {
         this.computeAvailableFormatClasses();
     }
 
-    attach(editor: Editor) {
+    attach(editor: PlumeEditor) {
         this.editor = editor;
         this.createToolbarButtons();
         this.registerToolbarButtons(editor);
         this.setupEventListeners(editor);
     }
 
-    setupEventListeners(editor: Editor) {
+    setupEventListeners(editor: PlumeEditor) {
         editor.on('activeBlockElChange', this.findActiveBlockFormat.bind(this, editor))
         editor.on('activeBlockElChange', this.update.bind(this, editor))
     }
 
-    registerToolbarButtons(editor: Editor) {
+    registerToolbarButtons(editor: PlumeEditor) {
         editor.registerToolbarItem(<ToolbarItem>{
             id: 'formatting-styles',
             elements: [

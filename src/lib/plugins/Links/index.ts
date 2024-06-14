@@ -5,7 +5,7 @@ import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton";
 
 import linkIcon from '@/assets/icons/link.svg';
 import removeLinkIcon from '@/assets/icons/remove-link.svg';
-import Editor from "@/lib/editor.ts";
+import PlumeEditor from "@/lib/editor.ts";
 
 export default class LinksPlugin implements EditorPlugin {
     id = 'links'
@@ -15,7 +15,7 @@ export default class LinksPlugin implements EditorPlugin {
 
     editor = null
 
-    attach(editor: Editor) {
+    attach(editor: PlumeEditor) {
 
         this.editor = editor;
 

@@ -2,14 +2,14 @@ import { EditorPlugin, ToolbarItem } from "../../types.ts";
 import { Modal } from '../../utils/modal.js';
 import SimpleToolbarButton from '../../toolbar/SimpleToolbarButton.js';
 import sourceCodeIcon from '@/assets/icons/sourcecode.svg';
-import Editor from "@/lib/editor.ts";
+import PlumeEditor from "@/lib/editor.ts";
 
 export default class SourcePlugin implements EditorPlugin {
     id = 'source'
     sourceButton = null
-    editor: Editor | null = null
+    editor: PlumeEditor | null = null
 
-    attach(editor: Editor) {
+    attach(editor: PlumeEditor) {
         this.editor = editor;
         this.sourceButton = new SimpleToolbarButton({
             icon: sourceCodeIcon,

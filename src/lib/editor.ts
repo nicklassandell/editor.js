@@ -6,7 +6,7 @@ import {
     getEl,
 } from "./utils/el.ts";
 
-export default class Editor {
+export default class PlumeEditor {
     id: string | null = null;
     el: HTMLElement | null = null;
     toolbarEl: HTMLElement | null = null;

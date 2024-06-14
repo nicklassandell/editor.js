@@ -9,7 +9,7 @@ import type { EditorPlugin, ToolbarItem } from "../../types.ts";
 import SimpleToolbarButton from "@/lib/toolbar/SimpleToolbarButton";
 import italicIcon from '@/assets/icons/italic.svg';
 import boldIcon from '@/assets/icons/bold.svg';
-import Editor from "@/lib/editor.ts";
+import PlumeEditor from "@/lib/editor.ts";
 
 export default class InlineBasicsPlugin implements EditorPlugin {
     id = 'inline-basics'
@@ -19,7 +19,7 @@ export default class InlineBasicsPlugin implements EditorPlugin {
     }
     editor = null
 
-    attach(editor: Editor) {
+    attach(editor: PlumeEditor) {
 
         this.editor = editor;
 
