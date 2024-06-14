@@ -1,14 +1,32 @@
+const instances = [];
+
+document.body.addEventListener('keydown', (e) => {
+	if (e.key === 'Escape') {
+		closeTopModal();
+	}
+})
+
+function closeTopModal() {
+	if (!instances.length) return;
+	const top = instances[instances.length - 1];
+	if (top.config.cancellable) {
+		top.destroy();
+	}
+}
+
 export class Modal {
 
 	id = 'editor-' + (Math.random() * 10000).toFixed(0);
 	el = null;
 	config = {
-		closeOnOutsideClick: true,
+		cancellable: true,
 		width: 'sm',
 	}
+
 	constructor(config) {
 		this.config = { ...this.config, ...(config || {}) };
 		this.create();
+		instances.push(this);
 	}
 
 	get titleEl() {
@@ -50,9 +68,9 @@ export class Modal {
 			}
 		})
 
-		if (this.config.closeOnOutsideClick) {
+		if (this.config.cancellable) {
 			this.el.addEventListener('click', (e) => {
-				if (e.target.matches('.editor-modal.outer')) {
+				if (e.target.matches('.plume-modal.outer')) {
 					this.destroy();
 				}
 			})
