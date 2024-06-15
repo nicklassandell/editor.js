@@ -6,10 +6,10 @@ import {
     wrapRange
 } from '../../utils/el';
 import type { EditorPlugin, ToolbarItem } from "../../types.ts";
-import SimpleToolbarButton from "@/lib/toolbar/SimpleToolbarButton";
-import italicIcon from '@/assets/icons/italic.svg';
-import boldIcon from '@/assets/icons/bold.svg';
-import PlumeEditor from "@/lib/editor.ts";
+import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton.ts";
+import italicIcon from '../../assets/icons/italic.svg';
+import boldIcon from '../../assets/icons/bold.svg';
+import PlumeEditor from "../../editor.ts";
 
 export default class InlineBasicsPlugin implements EditorPlugin {
     id = 'inline-basics'

@@ -1,8 +1,8 @@
-import type { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '@/lib/types.js';
-import { changeNodeName, elHasClasses, tagsMatch } from "@/lib/utils/el.ts";
-import SimpleToolbarButton from "@/lib/toolbar/SimpleToolbarButton.js";
-import DropdownToolbarButton from "@/lib/toolbar/DropdownToolbarButton.js";
-import PlumeEditor from "@/lib/editor.ts";
+import type { EditorPlugin, SimpleToolbarButtonArguments, ToolbarItem } from '../../types.js';
+import { changeNodeName, elHasClasses, tagsMatch } from "../../utils/el.ts";
+import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton.ts";
+import DropdownToolbarButton from "../../toolbar/DropdownToolbarButton.ts";
+import PlumeEditor from "../../editor.ts";
 
 export default class FormattingPlugin implements EditorPlugin {
     id = 'formatting'

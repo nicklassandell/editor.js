@@ -1,5 +1,5 @@
-import type { EditorPlugin, ToolbarItem } from "@/lib/types.ts";
-import PlumeEditor from "@/lib/editor.ts";
+import type { EditorPlugin, ToolbarItem } from "../../types.ts";
+import PlumeEditor from "../../editor.ts";
 
 export default class ToolbarDividerPlugin implements EditorPlugin {
     id = 'divider';

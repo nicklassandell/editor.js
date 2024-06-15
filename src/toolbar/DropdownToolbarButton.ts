@@ -1,5 +1,5 @@
-import SimpleToolbarButton from './SimpleToolbarButton.js';
-import chevronDownIcon from '@/assets/icons/chevron-down.svg';
+import SimpleToolbarButton from './SimpleToolbarButton.ts';
+import chevronDownIcon from '../assets/icons/chevron-down.svg';
 
 // keep track of all instances of this class so we can close other open dropdowns when opening one
 const instances = [];

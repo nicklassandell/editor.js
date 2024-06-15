@@ -1,5 +1,5 @@
 {
-  "name": "editor.js",
+  "name": "demo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "plumejs": "file:../src",
     "vue": "^3.3.11"
   },
   "devDependencies": {

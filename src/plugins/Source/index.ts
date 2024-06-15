@@ -1,8 +1,8 @@
 import { EditorPlugin, ToolbarItem } from "../../types.ts";
 import { Modal } from '../../utils/modal.js';
 import SimpleToolbarButton from '../../toolbar/SimpleToolbarButton.js';
-import sourceCodeIcon from '@/assets/icons/sourcecode.svg';
-import PlumeEditor from "@/lib/editor.ts";
+import sourceCodeIcon from '../../assets/icons/sourcecode.svg';
+import PlumeEditor from "../../editor.ts";
 
 export default class SourcePlugin implements EditorPlugin {
     id = 'source'

@@ -1,13 +1,13 @@
 <script setup>
 	import { onMounted, onUnmounted, ref } from 'vue';
 
-	import PlumeEditor from './lib/editor.ts';
-	import InlineBasicsPlugin from './lib/plugins/InlineBasics/index.ts';
-	import FormattingPlugin from './lib/plugins/Formatting/index.ts';
-	import LinksPlugin from './lib/plugins/Links/index.ts';
-	import SourcePlugin from './lib/plugins/Source/index.ts';
-	import ToolbarDividerPlugin from './lib/plugins/ToolbarDivider/index.ts';
-	import './lib/css/index.scss';
+	import PlumeEditor from 'plumejs/editor.ts';
+	import InlineBasicsPlugin from 'plumejs/plugins/InlineBasics/index.ts';
+	import FormattingPlugin from 'plumejs/plugins/Formatting/index.ts';
+	import LinksPlugin from 'plumejs/plugins/Links/index.ts';
+	import SourcePlugin from 'plumejs/plugins/Source/index.ts';
+	import ToolbarDividerPlugin from 'plumejs/plugins/ToolbarDivider/index.ts';
+	import 'plumejs/css/index.scss';
 
 	const el = ref();
 	const el2 = ref();

@@ -3,9 +3,9 @@ import {  EditorPlugin, ToolbarItem } from "../../types.ts";
 import { Modal } from '../../utils/modal.js';
 import SimpleToolbarButton from "../../toolbar/SimpleToolbarButton";
 
-import linkIcon from '@/assets/icons/link.svg';
-import removeLinkIcon from '@/assets/icons/remove-link.svg';
-import PlumeEditor from "@/lib/editor.ts";
+import linkIcon from '../../assets/icons/link.svg';
+import removeLinkIcon from '../../assets/icons/remove-link.svg';
+import PlumeEditor from "../../editor.ts";
 
 export default class LinksPlugin implements EditorPlugin {
     id = 'links'

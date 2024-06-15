@@ -1,6 +1,6 @@
 import { defaultOptions } from './data/defaultOptions';
 import { EditorConfig, EditorPlugin, ToolbarItem } from "./types";
-import { cleanupInlineStyles, closest, getEl, } from "./utils/el.ts";
+import { closest } from "./utils/el.ts";
 
 export default class PlumeEditor {
     id: string | null = null;

@@ -1,4 +1,4 @@
-import GenericToolbarButton from './GenericToolbarButton.js';
+import GenericToolbarButton from './GenericToolbarButton.ts';
 
 export default class SimpleToolbarButton extends GenericToolbarButton {
 

@@ -1,0 +1,11 @@
+{
+  "name": "plumejs",
+  "version": "1.0.0",
+  "description": "(Not so) Rich Text Editor",
+  "main": "editor.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
