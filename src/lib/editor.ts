@@ -1,10 +1,6 @@
 import { defaultOptions } from './data/defaultOptions';
 import { EditorConfig, EditorPlugin, ToolbarItem } from "./types";
-import {
-    cleanupInlineStyles,
-    closest,
-    getEl,
-} from "./utils/el.ts";
+import { cleanupInlineStyles, closest, getEl, } from "./utils/el.ts";
 
 export default class PlumeEditor {
     id: string | null = null;
@@ -39,25 +35,19 @@ export default class PlumeEditor {
 
         this.contentEl.addEventListener('keyup', this.update.bind(this));
         this.contentEl.addEventListener('mouseup', this.update.bind(this))
-        this.contentEl.addEventListener('click', (e) => {
-            if (e.shiftKey) {
-                this.blockifyRootNodes();
-                this.cleanupInlineStyles();
-            }
-        })
         this.contentEl.addEventListener('paste', (e) => {
             e.preventDefault();
 
+            // todo: Allow pasting html and sanitize pasted input. Should filter out disallowed tags & attributes.
             const clipboardData = e.clipboardData;
-            const pastedText = clipboardData.getData('text/plain');
-            const processedText = pastedText;
+            const plainText = clipboardData.getData('text/plain');
 
-            // this is the only time we call execCommand in the lib, not really nice
-            document.execCommand('insertText', false, processedText);
+            // todo: Handle insertion ourselves, execCommand is deprecated and there's no need to use it. It's also
+            //  the only place in the codebase where it is used.
+            document.execCommand('insertText', false, plainText);
         })
 
         // disable native formatting keyboard shortcuts, will add our own
-        // todo: refactor elsewhere.
         this.contentEl.addEventListener('keydown', (e) => {
             if (['b', 'i', 'u'].includes(e.key) && e.composed) {
                 e.preventDefault();
@@ -68,67 +58,7 @@ export default class PlumeEditor {
     }
 
     update() {
-        // console.log('editor: something changed')
         this.findActiveElements();
-    }
-
-    blockifyRootNodes() {
-        const els = [];
-        let newNode = document.createElement('p');
-        let didCorrect = false;
-        for (const node of this.contentEl.childNodes) {
-            // if text node
-            if (node instanceof Text) {
-                // console.log('should be text node')
-                if (node.textContent) {
-                    newNode.insertAdjacentText('beforeend', node.textContent);
-                }
-                didCorrect = true;
-
-            } else if (node instanceof HTMLElement) {
-                let el = getEl(node);
-                const isBlockEl = el.matches(this.config.blockTags.join(', '));
-
-                if (el && el.isSameNode(this.contentEl)) {
-                    el = null;
-                }
-
-                // if inline el
-                if (!isBlockEl) {
-                    // insertAdjacentElement with node would be nicer, but it seems to skip some nodes if we do that.
-                    newNode.insertAdjacentHTML('beforeend', node.outerHTML);
-                    didCorrect = true;
-                    continue;
-                }
-
-                // at this point it must be a block el
-                // first append current paragraph node to els and make a new empty one
-                if (newNode.innerHTML) {
-                    els.push(newNode);
-                    newNode = document.createElement('p');
-                }
-                // then append block el
-                els.push(el);
-            }
-        }
-
-        // todo: can we kick this?
-        if (didCorrect) {
-            if (newNode.innerHTML) {
-                els.push(newNode);
-            }
-            this.contentEl.innerHTML = '';
-            for (const el of els) {
-                this.contentEl.insertAdjacentElement('beforeend', el);
-            }
-            const lastBlock = this.contentEl.children[this.contentEl.children.length - 1];
-            const lastNode = lastBlock.childNodes[lastBlock.childNodes.length - 1];
-            window.getSelection().setPosition(lastNode, lastNode.length)
-        }
-    }
-
-    cleanupInlineStyles() {
-        cleanupInlineStyles(this.contentEl);
     }
 
     findActiveElements() {
@@ -170,7 +100,7 @@ export default class PlumeEditor {
     }
 
     destroy() {
-        // todo: write
+        // todo: handle destroy event (& call destroy() on plugins)
         this.toolbarEl.outerHTML = '';
     }
 

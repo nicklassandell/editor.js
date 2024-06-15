@@ -1,21 +1,13 @@
 // essentially the same as el.closest() but handles text nodes
 export const closest = (tag: string, startNode: Node): Element | null => {
-    let currentNode: Node = startNode;
-    // todo: i think loop is pointless, should never go up more than 1 step before calling .closest()
-    while (currentNode && currentNode !== document.body) {
-        if (currentNode instanceof HTMLElement) {
-            const found = currentNode.closest(tag);
-            if (found) {
-                return found;
-            }
-        }
-        currentNode = currentNode.parentNode as Node;
+    if (!(startNode instanceof HTMLElement)) {
+        return closest(tag, startNode.parentNode);
     }
-    return null;
+    return startNode.closest(tag);
 }
 
 // if node is text node, returns parent element
-export const getEl = (node) => {
+export const getEl = (node: HTMLElement | Text) => {
     return node instanceof Text ? node.parentElement : node;
 }
 
@@ -29,7 +21,6 @@ export const elHasClasses = (el, classes) => {
 }
 
 export const sanitizeHtml = (html) => {
-
     const rootNode = document.createElement('div');
     rootNode.innerHTML = html;
 
@@ -43,6 +34,61 @@ export const sanitizeHtml = (html) => {
     }
     console.log(rootNode.innerHTML)
     return rootNode.innerHTML;
+}
+
+
+export const blockifyRootNodes = (rootEl: HTMLElement, blockTags: []) => {
+    const els = [];
+    let newNode = document.createElement('p');
+    let didCorrect = false;
+    for (const node of rootEl.childNodes) {
+        // if text node
+        if (node instanceof Text) {
+            // console.log('should be text node')
+            if (node.textContent) {
+                newNode.insertAdjacentText('beforeend', node.textContent);
+            }
+            didCorrect = true;
+
+        } else if (node instanceof HTMLElement) {
+            let el = getEl(node);
+            const isBlockEl = el.matches(blockTags.join(', '));
+
+            if (el && el.isSameNode(rootEl)) {
+                el = null;
+            }
+
+            // if inline el
+            if (!isBlockEl) {
+                // insertAdjacentElement with node would be nicer, but it seems to skip some nodes if we do that.
+                newNode.insertAdjacentHTML('beforeend', node.outerHTML);
+                didCorrect = true;
+                continue;
+            }
+
+            // at this point it must be a block el
+            // first append current paragraph node to els and make a new empty one
+            if (newNode.innerHTML) {
+                els.push(newNode);
+                newNode = document.createElement('p');
+            }
+            // then append block el
+            els.push(el);
+        }
+    }
+
+    // if (didCorrect) {
+    //     if (newNode.innerHTML) {
+    //         els.push(newNode);
+    //     }
+    //     rootEl.innerHTML = '';
+    //     for (const el of els) {
+    //         rootEl.insertAdjacentElement('beforeend', el);
+    //     }
+    //     const lastBlock = rootEl.children[rootEl.children.length - 1];
+    //     const lastNode = lastBlock.childNodes[lastBlock.childNodes.length - 1];
+    //     window.getSelection().setPosition(lastNode, lastNode.length)
+    // }
 }
 
 export const cleanupInlineStyles = (el) => {
@@ -91,7 +137,6 @@ export const insertTextAtCaret = (text) => {
         selection.addRange(range);
     }
 };
-
 
 
 export const classesMatch = (el, classes) => {
@@ -175,7 +220,7 @@ export const setSelectionWithinElement = (el, startPos, endPos) => {
     let length = 0;
     let hasStart = false;
 
-    // todo: handle nested els?
+    // todo: does not handle nested els
     for (const childNode of el.childNodes) {
         let thisLength = 0;
         if (childNode instanceof HTMLElement) {
@@ -212,9 +257,7 @@ export const setSelectionWithinElement = (el, startPos, endPos) => {
 }
 
 export const expandRangeByWord = () => {
-    // todo: check for whitespace around caret first?
     const selection = window.getSelection() as Selection;
-    const orgRange = selection.getRangeAt(0)
 
     if (!selection.isCollapsed) {
         return selection.getRangeAt(0)
@@ -222,7 +265,7 @@ export const expandRangeByWord = () => {
 
     const clonedRange = selection.getRangeAt(0).cloneRange();
 
-
+    // this is a hack to get the browser to select the full word from current caret position
     selection.modify('extend', 'backward', 'word');
     const start = Math.min(selection.anchorOffset, selection.focusOffset)
     selection.modify('extend', 'forward', 'word');
@@ -234,8 +277,6 @@ export const expandRangeByWord = () => {
         selection.empty();
         selection.addRange(clonedRange);
     })
-    console.log('orgRange:', orgRange);
-    console.log('clonedRange:', clonedRange);
 
     const range = selection.getRangeAt(0);
     range.setStart(range.commonAncestorContainer, start);
@@ -275,7 +316,6 @@ export const expandRangeToWordBoundary = (orgRange: Range) => {
 }
 
 export const expandSelectionByWord = () => {
-    // todo: check for whitespace around caret first?
     const selection = window.getSelection() as Selection;
     selection.modify('extend', 'backward', 'word');
     const start = Math.min(selection.anchorOffset, selection.focusOffset)
@@ -289,11 +329,3 @@ export const expandSelectionByWord = () => {
     selection.empty();
     selection.addRange(range);
 }
-
-// copy attributes
-// const existingAttributes = activeBlockEl.getAttributeNames();
-// for (const attrName of existingAttributes) {
-//     if (existingAttributes[attrName]) {
-//         newNode.setAttribute(attrName, existingAttributes[attrName]);
-//     }
-// }
