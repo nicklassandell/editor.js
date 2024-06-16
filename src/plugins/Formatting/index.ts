@@ -88,7 +88,7 @@ export default class FormattingPlugin implements EditorPlugin {
         if (this.activeBlockFormat && this.activeBlockFormat.allowedTags?.length) {
             this.activeBlockFormat.allowedTags.forEach((tag: string) => {
                 this.tagButtons['tag-' + tag] = new SimpleToolbarButton({
-                    text: tag.toUpperCase(),
+                    text: '<' + tag.toUpperCase() + '>',
                     onClick: () => this.formatBlock({ tag })
                 })
                 if (tag.toLowerCase() === activeBlockEl.nodeName.toLowerCase()) {
@@ -96,7 +96,7 @@ export default class FormattingPlugin implements EditorPlugin {
                 }
             })
             this.tagsButton.renderChildren(Object.values(this.tagButtons).map((btn) => btn.rootEl));
-            this.tagsButton.setText(activeBlockEl.nodeName.toUpperCase());
+            this.tagsButton.setText('<' + activeBlockEl.nodeName.toUpperCase() + '>');
             this.tagsButton.show();
         }
         return [];
