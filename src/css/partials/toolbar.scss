@@ -1,10 +1,5 @@
 .plume .toolbar {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    background: #FFF;
-    padding: 6px;
-    border-radius: 4px;
+    padding: 8px;
     display: flex;
     gap: 4px;
 
@@ -13,7 +8,7 @@
         width: 1px;
         background: black;
         margin: 6px 10px;
-        opacity: .2;
+        opacity: .1;
     }
 
     .toolbar-btn-holder {
@@ -33,6 +28,11 @@
                 background: transparent;
                 align-items: center;
                 height: 32px;
+                transition-duration: .3s;
+
+                &:hover {
+                    transition-duration: .07s;
+                }
 
                 &[data-tooltip] {
                     &:hover::after {
@@ -50,7 +50,7 @@
                         color: #FFF;
                         background: rgb(30 30 30 / .9);
                         border-radius: 3px;
-                        animation: tooltipIn .2s .8s both;
+                        animation: tooltipIn .2s .4s both;
                         display: none;
 
                         @keyframes tooltipIn {
@@ -94,7 +94,7 @@
 
         &.dropdown {
             > button {
-                background: #eeeeee;
+                background: #f6f6f6;
                 padding-left: 8px;
                 padding-right: 8px;
 
@@ -108,7 +108,7 @@
 
             &.--is-open {
                 & > .children {
-                    display: block;
+                    display: flex;
                 }
 
                 // force hide tooltip when dropdown is shown
@@ -119,15 +119,19 @@
 
             .children {
                 position: absolute;
-                top: 100%;
+                top: calc(100% + 4px);
                 left: 0;
                 display: none;
                 flex-direction: column;
                 gap: 2px;
                 background: #FFF;
-                padding: 4px;
+                padding: 6px;
                 border-radius: 4px;
-                box-shadow: 0 0 5px rgba(0, 0, 0, .1);
+                box-shadow: 0 0 1px 1px rgba(0 0 0 / .07), 0 2px 6px rgba(0  0  0  / .2);
+
+                .simple .text {
+                    padding-right: 32px;
+                }
             }
         }
     }

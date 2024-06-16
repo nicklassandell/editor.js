@@ -113,6 +113,7 @@ export default class SimpleToolbarButton extends GenericToolbarButton {
 		if (!this.iconEl) {
 			const iconEl = document.createElement('img');
 			iconEl.classList.add('icon');
+			iconEl.draggable = false;
 			this.buttonEl.insertAdjacentElement('afterbegin', iconEl);
 		}
 		this.iconEl.src = iconName;

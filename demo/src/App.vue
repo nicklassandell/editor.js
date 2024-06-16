@@ -56,7 +56,7 @@
 				allowedTags: ['h1', 'h2', 'h3'],
 			},
 		];
-		const editors = [{ e: el, ed: editor }, { e: el2, ed: editor2 }];
+		const editors = [{ e: el, ed: editor }];
 		// const editors = [{ e: el, ed: editor }];
 		for (const { e, ed } of editors) {
 			ed.value = new PlumeEditor(e.value, {
@@ -81,39 +81,54 @@
 </script>
 
 <template>
-	<div ref="el" class="el">
-		<h1>This is a H1</h1>
-		<!--		<h2>This is a H2</h2>-->
-		<!--		<h3>This is a H3</h3>-->
-		<p class="double-1 double-2"><strong>This</strong> is a p <strong>with</strong> 2 classes</p>
-		<p class="text-eyebrow">this is an eyebrow</p>
-		<h3 class="text-hero-1">This is a <a href="#foo">hero</a> 1</h3>
-		<h2 class="text-hero-2">This is a hero 2</h2>
-		<p>You can do anything here - the only pre-requisite is that it makes you happy. Now we'll take the almighty fan brush. How to paint. That's easy. What to paint. That's much harder. It's life. It's interesting. It's fun. Let's go up in here, and start having some fun</p>
-		<p>Isn't it fantastic that you can change your mind and create all these happy things? There are no limits in this world. Isn't that fantastic? You can just push a little tree out of your brush like that.</p>
-		<p>this is yet <i>another</i> paragraph</p>
+	<div class="container">
+		<h1>Plume.js</h1>
+		<p>This is a demo of the Plume editor.</p>
+		<br>
+
+		<div class="editor-holder">
+			<div ref="el" class="el">
+				<h1>This is a H1</h1>
+				<!--		<h2>This is a H2</h2>-->
+				<!--		<h3>This is a H3</h3>-->
+				<p class="double-1 double-2"><strong>This</strong> is a p <strong>with</strong> 2 classes</p>
+				<p class="text-eyebrow">this is an eyebrow</p>
+				<h3 class="text-hero-1">This is a <a href="#foo">hero</a> 1</h3>
+				<h2 class="text-hero-2">This is a hero 2</h2>
+				<p>You can do anything here - the only pre-requisite is that it makes you happy. Now we'll take the almighty fan brush. How to paint. That's easy. What to paint. That's much harder. It's life. It's interesting. It's fun. Let's go up in here, and start having some fun</p>
+				<p>Isn't it fantastic that you can change your mind and create all these happy things? There are no limits in this world. Isn't that fantastic? You can just push a little tree out of your brush like that.</p>
+				<p>this is yet <i>another</i> paragraph</p>
+			</div>
+		</div>
 	</div>
-	<br><br><br>
-	<div ref="el2" class="el"></div>
 </template>
 
-<style>
+<style lang="scss">
 
 
-	.el {
-		border: 1px solid lightcoral;
-		padding: 20px;
-		text-align: left;
+	html {
+		height: 100%;
 	}
 
 	body {
 		margin: 0;
 		padding: 50px;
-		line-height: 1.2;
+		min-height: 100%;
+		background: linear-gradient(175deg, #1b509f, #194588 50%, #f1f1f1 50.001%);
 	}
 
-	.plume {
+	.container {
+		max-width: 800px;
+		margin: 0 auto;
+	}
 
+	.editor-holder {
+		padding: 8px;
+		background: rgba(255 255 255 / .08);
+		border-radius: 12px;
+	}
+
+	.plume .content {
 		h1, h2, h3, p {
 			line-height: 1.15;
 		}
