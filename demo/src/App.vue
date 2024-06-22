@@ -23,15 +23,21 @@
 			},
 			{
 				name: 'Heading 1',
-				tag: 'h1',
+				classes: ['h1'],
+				defaultTag: 'h1',
+				allowedTags: ['h1', 'h2', 'h3'],
 			},
 			{
 				name: 'Heading 2',
-				tag: 'h2',
+				classes: ['h2'],
+				defaultTag: 'h2',
+				allowedTags: ['h1', 'h2', 'h3'],
 			},
 			{
 				name: 'Heading 3',
-				tag: 'h3',
+				classes: ['h3'],
+				defaultTag: 'h3',
+				allowedTags: ['h1', 'h2', 'h3'],
 			},
 			{
 				name: 'Eyebrow',
@@ -88,16 +94,12 @@
 
 		<div class="editor-holder">
 			<div ref="el" class="el">
-				<h1>This is a H1</h1>
-				<!--		<h2>This is a H2</h2>-->
-				<!--		<h3>This is a H3</h3>-->
-				<p class="double-1 double-2"><strong>This</strong> is a p <strong>with</strong> 2 classes</p>
-				<p class="text-eyebrow">this is an eyebrow</p>
-				<h3 class="text-hero-1">This is a <a href="#foo">hero</a> 1</h3>
-				<h2 class="text-hero-2">This is a hero 2</h2>
-				<p>You can do anything here - the only pre-requisite is that it makes you happy. Now we'll take the almighty fan brush. How to paint. That's easy. What to paint. That's much harder. It's life. It's interesting. It's fun. Let's go up in here, and start having some fun</p>
-				<p>Isn't it fantastic that you can change your mind and create all these happy things? There are no limits in this world. Isn't that fantastic? You can just push a little tree out of your brush like that.</p>
-				<p>this is yet <i>another</i> paragraph</p>
+				<h2 class="h2">Unleash the Power of Creativity</h2>
+				<p>Imagine a world where every idea turns into a masterpiece. A realm where innovation knows no bounds and creativity flows like a river. Welcome to such a world, where your thoughts become reality.</p>
+				<p>In this land of endless possibilities, your imagination is your only limit. From the tallest mountains of inspiration to the deepest valleys of thought, every creation is a testament to your ingenuity.</p>
+				<p class="text-eyebrow">Discover Our Magic</p>
+				<h2 class="h2">What Sets Us Apart?</h2>
+				<p>With a touch of brilliance and a spark of genius, we transform the mundane into the extraordinary. Our secret? An unwavering commitment to pushing boundaries and exploring uncharted territories of creativity.</p>
 			</div>
 		</div>
 	</div>
@@ -137,40 +139,48 @@
 			line-height: 1.4;
 		}
 
-		h1 {
+		.h1 {
 			font-size: 2.5rem;
 			font-weight: bold;
 		}
 
-		h2 {
+		.h2 {
 			font-size: 2rem;
 			font-weight: bold;
 		}
 
-		h3 {
+		.h3 {
 			font-size: 1.625rem;
 			font-weight: bold;
 		}
 
 		.text-hero-1 {
-			border-left: 5px solid red;
-			font-size: 4.375rem;
+			font-size: 3rem;
 			font-weight: bold;
-			padding-left: 10px;
+			text-transform: uppercase;
+			background: black;
+			color: white;
+			padding: 8px 14px;
 		}
 
 		.text-hero-2 {
-			border-left: 10px solid red;
-			font-size: 3.125rem;
+			font-size: 2rem;
 			font-weight: bold;
-			padding-left: 10px;
+			text-transform: uppercase;
+			background: black;
+			color: white;
+			padding: 8px 14px;
 		}
 
 		.text-eyebrow {
 			text-transform: uppercase;
 			font-family: monospace;
 			letter-spacing: 1px;
-			font-size: 1.125rem;
+			font-size: 1rem;
+
+			& + .h1, & + .h2, & + .h3 {
+				margin-top: 0;
+			}
 		}
 
 		.double-1 {

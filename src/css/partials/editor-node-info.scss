@@ -7,7 +7,7 @@
             &::before {
                 position: absolute;
                 display: block;
-                bottom: 100%;
+                bottom: calc(100% - 6px);
                 right: 100%;
                 color: darkorange;
                 font-size: .5rem;
