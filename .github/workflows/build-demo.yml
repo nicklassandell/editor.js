@@ -14,16 +14,13 @@ jobs:
             -   uses: actions/checkout@v4
             -   name: Build demo
                 run: |
-                    pwd
                     echo "Enter demo folder"
                     cd demo
                     
-                    pwd
+                    rm package-lock.json
                     
                     echo "npm ci"
                     npm ci
-                    
-                    pwd
                     
                     echo "npm run build"
                     npm run build
