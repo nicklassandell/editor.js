@@ -1,0 +1,20 @@
+image: node:16.5.0
+pages:
+    stage: deploy
+    cache:
+        key:
+            files:
+                - demo/package-lock.json
+            prefix: npm
+        paths:
+            - demo/node_modules/
+    script:
+        - cd demo
+        - npm install
+        - npm run build
+        - cp -a dist/. ../demo-public/
+    artifacts:
+        paths:
+            - demo-public
+    rules:
+        - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
