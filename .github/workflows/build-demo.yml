@@ -14,17 +14,26 @@ jobs:
             -   uses: actions/checkout@v4
             -   name: Build demo
                 run: |
+                    pwd
                     echo "Enter demo folder"
                     cd demo
+                    
+                    pwd
                     
                     echo "npm ci"
                     npm ci
                     
-                    echo "check node_modules"
-                    ls -lah node_modules
+                    pwd
                     
                     echo "npm run build"
                     npm run build
-                    
-                    echo "move dist files"
-                    cp -a dist/. ../public/
+
+            - name: Setup Pages
+              uses: actions/configure-pages@v4
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: './dist'
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
