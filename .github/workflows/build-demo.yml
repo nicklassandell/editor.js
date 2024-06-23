@@ -19,3 +19,12 @@ jobs:
                     
                     echo "npm install"
                     npm i
+                    
+                    echo "check node_modules"
+                    ls -lah node_modules
+                    
+                    echo "npm run build"
+                    npm run build
+                    
+                    echo "move dist files"
+                    cp -a dist/. ../public/
