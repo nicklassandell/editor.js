@@ -23,7 +23,7 @@ jobs:
                     npm i
                     
                     echo "npm run build"
-                    npm run build
+                    ASSET_BASE_PATH=/plume-editor npm run build
 
             - name: Setup Pages
               uses: actions/configure-pages@v4
