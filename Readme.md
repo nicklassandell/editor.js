@@ -1,7 +1,7 @@
 # What is this
 It's just a fun little side project. It's not ready for prime time, and will probably never be. I started this project because none of the major editors on the market quite satisfy my needs, and I wanted to play around with the APIs for selection manipulation and cursor control (which turned out to be quite complex).
 
-Here's a demo: ...
+Here's a demo: [https://nicklassandell.github.io/plume-editor/](https://nicklassandell.github.io/plume-editor/)
 
 Key features include:
 - Ability to control tags (Nodename) independently of the format (class)
