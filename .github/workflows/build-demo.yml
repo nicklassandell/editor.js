@@ -17,7 +17,7 @@ jobs:
                     echo "Enter demo folder"
                     cd demo
                     
-                    echo "npm install"
+                    echo "npm ci"
                     npm i
                     
                     echo "check node_modules"
