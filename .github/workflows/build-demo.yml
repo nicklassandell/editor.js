@@ -14,7 +14,8 @@ jobs:
             -   uses: actions/checkout@v4
             -   name: Build demo
                 run: |
+                    echo "Enter demo folder"
                     cd demo
+                    
+                    echo "npm install"
                     npm i
-                    npm run build
-                    cp -a dist/. ../public/
