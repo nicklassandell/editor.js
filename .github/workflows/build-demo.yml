@@ -19,8 +19,8 @@ jobs:
                     
                     rm package-lock.json
                     
-                    echo "npm ci"
-                    npm ci
+                    echo "npm install"
+                    npm i
                     
                     echo "npm run build"
                     npm run build
