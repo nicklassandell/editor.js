@@ -18,7 +18,7 @@ jobs:
                     cd demo
                     
                     echo "npm ci"
-                    npm i
+                    npm ci
                     
                     echo "check node_modules"
                     ls -lah node_modules
