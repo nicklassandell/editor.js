@@ -12,9 +12,9 @@ pages:
         - cd demo
         - npm install
         - npm run build
-        - cp -a dist/. ../demo-public/
+        - cp -a dist/. ../public/
     artifacts:
         paths:
-            - demo-public
+            - public
     rules:
         - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
