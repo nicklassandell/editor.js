@@ -23,16 +23,17 @@ body {
     padding: 50px;
     min-height: 100%;
     background: #f1f1f1;
+    overflow-x: hidden;
 }
 
 .bg-gradient {
     position: absolute;
-    top: -100%;
-    left: -100%;
-    right: -100%;
-    bottom: 50%;
-    transform: rotate(175deg);
-    background: linear-gradient(to bottom, #1b509f, #194588);
+    top: -500px;
+    left: -20vw;
+    right: -20vw;
+    bottom: calc(100vh - 400px);
+    transform: rotate(176deg);
+    background: linear-gradient(to top, #1b509f 90%, #194588);
 }
 
 .container {
