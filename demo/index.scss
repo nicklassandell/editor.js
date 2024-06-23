@@ -1,0 +1,113 @@
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 50px;
+    min-height: 100%;
+    background: #f1f1f1;
+}
+
+.bg-gradient {
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    right: -100%;
+    bottom: 50%;
+    transform: rotate(175deg);
+    background: linear-gradient(to bottom, #1b509f, #194588);
+}
+
+.container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.editor-holder {
+    padding: 8px;
+    background: rgba(255 255 255 / .08);
+    border-radius: 12px;
+}
+
+
+// editor content styles
+.plume .content {
+    h1, h2, h3, p {
+        line-height: 1.15;
+    }
+
+    p {
+        line-height: 1.4;
+    }
+
+    .h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+    }
+
+    .h2 {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    .h3 {
+        font-size: 1.625rem;
+        font-weight: bold;
+    }
+
+    .text-hero-1 {
+        font-size: 3rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        background: black;
+        color: white;
+        padding: 8px 14px;
+    }
+
+    .text-hero-2 {
+        font-size: 2rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        background: black;
+        color: white;
+        padding: 8px 14px;
+    }
+
+    .text-eyebrow {
+        text-transform: uppercase;
+        font-family: monospace;
+        letter-spacing: 1px;
+        font-size: 1rem;
+
+        & + .h1, & + .h2, & + .h3 {
+            margin-top: 0;
+        }
+    }
+
+    .double-1 {
+        border-left: 4px solid limegreen;
+        padding-left: 10px;
+    }
+
+    .double-2 {
+        border-right: 4px solid limegreen;
+    }
+}
