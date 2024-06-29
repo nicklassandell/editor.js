@@ -98,6 +98,11 @@ body {
         letter-spacing: 1px;
         font-size: 1rem;
 
+        &:not(:first-child) {
+            margin-top: 2rem;
+        }
+
+        // remove top margin of headlines if they comme immediately after
         & + .h1, & + .h2, & + .h3 {
             margin-top: 0;
         }
@@ -110,5 +115,20 @@ body {
 
     .double-2 {
         border-right: 4px solid limegreen;
+    }
+
+
+    // all allowed block elements
+    p, div, h1, h2, h3, h4, h5, h6, blockquote {
+        display: block;
+        margin: 0;
+
+        &:not(:first-child) {
+            margin-top: calc(min(1em, 24px));
+        }
+    }
+
+    a {
+        color: var(--plume-color-primary-600)
     }
 }

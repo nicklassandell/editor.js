@@ -17,16 +17,16 @@
 }
 
 .plume-btn.--primary {
-    background: #b18a4e;
+    background: var(--plume-color-primary-500);
     color: #FFF;
 
     &:hover {
-        background: #c79851;
+        background: var(--plume-color-primary-600);
         color: #fffbf2;
     }
 
     &:active {
-        background: #8d6c33;
+        background: var(--plume-color-primary-700);
         transform: scale(.95);
     }
 }

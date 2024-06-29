@@ -4,14 +4,26 @@
         p, div, h1, h2, h3, h4 {
             position: relative;
 
+            &:not(:hover)::before {
+                transform: scale(.9);
+                opacity: 0;
+                transition-duration: .4s;
+            }
+
             &::before {
                 position: absolute;
                 display: block;
-                bottom: calc(100% - 6px);
+                bottom: calc(100% - 18px);
                 right: 100%;
-                color: darkorange;
+                color: var(--plume-color-primary-50);
+                background: var(--plume-color-primary-600);
+                padding: 1px;
+                border-radius: 2px;
                 font-size: .5rem;
+                transition-duration: .1s;
             }
+
+
         }
 
         h1::before {
@@ -23,6 +35,10 @@
         }
 
         h3::before {
+            content: 'H3';
+        }
+
+        h4::before {
             content: 'H3';
         }
     }
